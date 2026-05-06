@@ -1,0 +1,5 @@
+{
+  "name": "astro-default",
+  "defaultDevPortHint": 4321,
+  "buildOutDir": "dist"
+}
