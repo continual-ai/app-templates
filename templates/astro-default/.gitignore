@@ -11,6 +11,15 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# local-server-manager artifacts (per-site dev server PIDs + logs)
+.server-*.pid
+.server-*.log
+
+# Playwright (the create-site dev loop uses it for visual checks)
+test-results/
+playwright-report/
+playwright/.cache/
+
 # environment
 .env
 .env.production
