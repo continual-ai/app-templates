@@ -17,16 +17,15 @@ Starter templates for sites scaffolded by Continual's `create-site` skill. Each 
 
 ## SDK
 
-The `@continual/sites-sdk` package is **not** developed here. It lives in the private `davinci`
-monorepo and is published to npm as `@continual/sites-sdk`. Templates depend on it the same way
-they depend on any other npm package.
+The `@continual/sites-sdk` package is **not** developed here. It's published to npm as
+[`@continual/sites-sdk`](https://www.npmjs.com/package/@continual/sites-sdk) and templates depend
+on it the same way they depend on any other npm package.
 
-To make an SDK change, see `apps/continual/docs/sites-sdk-development.md` in the davinci repo. The
-short version: bump the version in `packages/sites-sdk/`, merge, tag `sites-sdk-vX.Y.Z`, and CI
-publishes. Then bump the version in each template here.
+To pick up a new SDK version, bump the version in each template's `package.json`, refresh the
+lockfile, and commit.
 
 ## How the templates get into a sandbox
 
-`apps/continual/server/integrations/skills/create-site/SKILL.md` (in davinci) drives the scaffold
-flow. Templates are baked into the Daytona base image under `/opt/site-templates/`. The skill
-runs a best-effort `git pull` before scaffolding so template fixes ship without a snapshot rebake.
+The `create-site` skill drives the scaffold flow. Templates are baked into the Daytona base image
+under `/opt/site-templates/`. The skill runs a best-effort `git pull` before scaffolding so
+template fixes ship without a snapshot rebake.
