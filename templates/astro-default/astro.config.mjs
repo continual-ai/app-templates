@@ -1,10 +1,14 @@
 // @ts-check
 import { defineConfig } from "astro/config";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
 
 import react from "@astrojs/react";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
+
+const projectRoot = dirname(fileURLToPath(import.meta.url));
 
 // `site` is the absolute URL the build is being deployed under. Continual
 // injects SITE_URL at build time (the published hostname for this site).
@@ -27,12 +31,22 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    // Force a single React instance. When a site is installed inside a pnpm
+    // workspace, React can otherwise resolve to two copies and island hooks
+    // fail at runtime with "Cannot read properties of null (reading 'useState')".
+    // Harmless for a standalone install.
+    resolve: { dedupe: ["react", "react-dom"] },
     server: {
       // Daytona's preview proxy serves this dev server under arbitrary
       // hostnames (e.g. <previewHostId>{-env}.continual.{site|run}). Vite
       // blocks unknown hosts by default; we allow all because the proxy
       // controls who can reach us.
       allowedHosts: true,
+      // Let the dev server read files from above the project dir — so the React
+      // client runtime resolves when deps are hoisted to a workspace root (pnpm
+      // workspace). Two levels up is the repo/workspace root both for this
+      // template and for a site at <repo>/sites/<slug>; harmless otherwise.
+      fs: { allow: [resolve(projectRoot, "../..")] },
     },
   },
 });

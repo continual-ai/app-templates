@@ -1,0 +1,77 @@
+---
+/**
+ * Testimonials — responsive grid of quote cards (quote + name, optional
+ * role/avatar, optional eyebrow/heading above the grid). Static (renders to
+ * HTML, ships no JS).
+ * Tier: block / section.
+ * Props:
+ *   items (required, { quote: string; name: string; role?: string; avatar?: string }[])
+ *   heading? (string)
+ *   subheading? (string)
+ * Prerequisites: none beyond template defaults.
+ * Usage:
+ *   import Testimonials from "@/components/sections/Testimonials.astro";
+ *   <Testimonials
+ *     heading="Loved by teams"
+ *     items={[
+ *       { quote: "Shipping has never been easier.", name: "Ada Lovelace", role: "CTO, Acme" },
+ *       { quote: "We cut deploy time in half.", name: "Alan Turing", avatar: "/people/alan.jpg" },
+ *     ]}
+ *   />
+ */
+interface Testimonial {
+  quote: string;
+  name: string;
+  role?: string;
+  avatar?: string;
+}
+
+interface Props {
+  items: Testimonial[];
+  heading?: string;
+  subheading?: string;
+}
+
+const { items, heading, subheading } = Astro.props;
+---
+
+<section class="px-6 py-20 sm:py-24">
+  <div class="mx-auto max-w-6xl">
+    {
+      (heading || subheading) && (
+        <div class="mx-auto mb-12 max-w-2xl text-center">
+          {heading && (
+            <h2 class="text-foreground font-heading text-3xl font-semibold tracking-tight text-balance">
+              {heading}
+            </h2>
+          )}
+          {subheading && <p class="text-muted-foreground mt-3 text-pretty">{subheading}</p>}
+        </div>
+      )
+    }
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        items.map((item) => (
+          <figure class="bg-card text-card-foreground flex flex-col gap-4 rounded-xl border p-6 shadow-sm">
+            <blockquote class="text-pretty">&ldquo;{item.quote}&rdquo;</blockquote>
+            <figcaption class="mt-auto flex items-center gap-3">
+              {item.avatar && (
+                <img
+                  src={item.avatar}
+                  alt=""
+                  class="size-10 rounded-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+              <div class="flex flex-col">
+                <span class="text-foreground font-medium">{item.name}</span>
+                {item.role && <span class="text-muted-foreground text-sm">{item.role}</span>}
+              </div>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>

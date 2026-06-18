@@ -1,0 +1,40 @@
+---
+// Centralized <head> metadata: title, description, canonical, and OpenGraph /
+// Twitter cards for good link previews. Rendered by Layout.astro — set values
+// through Layout's props rather than using this directly.
+interface Props {
+  title: string;
+  description?: string;
+  /** OG/Twitter preview image — site-relative path or absolute URL. */
+  image?: string;
+  /** Override the canonical URL (defaults to the current page URL). */
+  canonical?: string;
+  type?: "website" | "article";
+}
+
+const { title, description, image, canonical, type = "website" } = Astro.props;
+
+// Astro.site is the deployed base URL (Continual injects SITE_URL at build).
+// Build absolute URLs from it so previews resolve; fall back to the request URL
+// during local dev when SITE_URL is unset.
+const siteUrl = Astro.site;
+const canonicalUrl = canonical
+  ? new URL(canonical, siteUrl ?? Astro.url).href
+  : new URL(Astro.url.pathname, siteUrl ?? Astro.url).href;
+const ogImage = image ? new URL(image, siteUrl ?? Astro.url).href : undefined;
+---
+
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+<link rel="canonical" href={canonicalUrl} />
+
+<meta property="og:title" content={title} />
+{description && <meta property="og:description" content={description} />}
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalUrl} />
+{ogImage && <meta property="og:image" content={ogImage} />}
+
+<meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={title} />
+{description && <meta name="twitter:description" content={description} />}
+{ogImage && <meta name="twitter:image" content={ogImage} />}

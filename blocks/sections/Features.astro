@@ -1,0 +1,60 @@
+---
+/**
+ * Features — responsive grid of feature cards (title + description, optional
+ * eyebrow/heading above the grid). Static (renders to HTML, ships no JS).
+ * Tier: block / section.
+ * Props:
+ *   items (required, { title: string; description: string }[])
+ *   heading? (string)
+ *   subheading? (string)
+ * Prerequisites: none beyond template defaults.
+ * Usage:
+ *   import Features from "@/components/sections/Features.astro";
+ *   <Features
+ *     heading="Why teams pick Acme"
+ *     items={[
+ *       { title: "Fast", description: "Sub-second deploys." },
+ *       { title: "Simple", description: "One command to ship." },
+ *     ]}
+ *   />
+ */
+interface Feature {
+  title: string;
+  description: string;
+}
+
+interface Props {
+  items: Feature[];
+  heading?: string;
+  subheading?: string;
+}
+
+const { items, heading, subheading } = Astro.props;
+---
+
+<section class="px-6 py-20 sm:py-24">
+  <div class="mx-auto max-w-6xl">
+    {
+      (heading || subheading) && (
+        <div class="mx-auto mb-12 max-w-2xl text-center">
+          {heading && (
+            <h2 class="text-foreground font-heading text-3xl font-semibold tracking-tight text-balance">
+              {heading}
+            </h2>
+          )}
+          {subheading && <p class="text-muted-foreground mt-3 text-pretty">{subheading}</p>}
+        </div>
+      )
+    }
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        items.map((item) => (
+          <div class="bg-card flex flex-col gap-2 rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
+            <h3 class="text-foreground font-medium">{item.title}</h3>
+            <p class="text-muted-foreground text-sm text-pretty">{item.description}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

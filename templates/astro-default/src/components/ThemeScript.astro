@@ -1,0 +1,18 @@
+---
+// Applies the persisted (or system) color scheme before first paint to avoid a
+// flash of the wrong theme. Renders nothing visible. Add to Layout's <head>
+// ONLY if the site uses dark mode (pair it with <ThemeToggle />). Without it,
+// the site stays in its default (light) scheme.
+---
+
+<script is:inline>
+  (() => {
+    try {
+      const stored = localStorage.getItem("theme");
+      const dark = stored
+        ? stored === "dark"
+        : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.classList.toggle("dark", dark);
+    } catch {}
+  })();
+</script>
