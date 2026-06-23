@@ -113,8 +113,11 @@ These live in the scaffold unused until you import them. Delete any you don't us
 
 ## Composing from layouts & blocks
 
-There's a shared library next to the templates — **don't rebuild common page shells or sections from
-scratch.** It's organized as a small design system:
+There's a shared library next to the templates — a **starting kit to move fast, not a fence.** Reach
+for it first for common page shells and sections so you don't redo the boring parts — but it's a
+vocabulary, not the whole language. When the design needs something the library doesn't have, **build
+your own** block/layout/component; that's expected, not a workaround. It's organized as a small design
+system:
 
 `ui primitives → blocks (sections) → layouts (page shells) → base Layout (html/head/telemetry)`
 
@@ -177,6 +180,12 @@ import Hero from "@/components/sections/Hero.astro";
 - **Copy only what you use.** The build already drops anything unimported, so unused blocks cost
   nothing in `dist/` — but keep the source lean by copying on demand rather than wholesale.
 - **Customize after copying** — the files are now yours; edit content, classes, and props freely.
+- **Build your own when it fits better.** The library is a head start, not the whole vocabulary — if a
+  section, layout, or component the site needs isn't here (or a canned one would compromise the
+  design), author it directly in `src/components/…`. Hold custom pieces to the same bar: design tokens
+  (never raw colors), `cn()` for class merging, static `.astro` by default with a React island only
+  where interaction requires it, WCAG AA — and give a reusable one the same header comment so it stays
+  self-documenting. Composing and authoring are equally first-class.
 
 ## Motion
 
@@ -248,8 +257,9 @@ frontmatter.
 ## UI primitives & styling
 
 - **shadcn components** live in `src/components/ui/` (`button`, `card`, `input` ship by default). Add
-  more with the shadcn CLI — see "Adding shadcn components" below. Don't hand-roll a component shadcn
-  already provides.
+  more with the shadcn CLI — see "Adding shadcn components" below. Prefer a shadcn primitive over
+  re-implementing a standard one, but compose and restyle them freely, and build bespoke components
+  when the design calls for them.
 - Merge classes with `cn()` from `@/lib/utils` (clsx + tailwind-merge) instead of string
   concatenation.
 - **Tailwind v4** (via `@tailwindcss/vite`). Use the **design tokens** defined in
@@ -464,10 +474,10 @@ canvas, not the CSS token system, so set them to mirror the brand by hand.
   the `<head>`.
 - Images blurry/heavy or shifting layout? Use `astro:assets` `<Image>` with `alt` + dimensions.
 - Set page title/description/OG via `Layout` props, not by hand-editing `<head>`.
-- Need a section/page shell? Copy a block/layout from the library — don't rebuild Hero/Pricing/FAQ/etc.
+- Need a common section/page shell? Check the library first to move fast — but build a custom one when the design needs something it doesn't have.
 - `Reveal`, `FAQ`, `Newsletter`, `SiteNav` not animating/interacting? They're islands — add `client:`.
 - `prose` body unstyled in a blog post? Install `@tailwindcss/typography` and add the `@plugin` line
   (blog is opt-in — see "Blog / content").
-- Building a blog? Don't hand-roll cards/validation — use `BlogIndex`, `BlogPostLayout`, and the MDX
-  components; the form blocks already validate.
+- Building a blog? Start from `BlogIndex`, `BlogPostLayout`, and the MDX components (the form blocks
+  already validate), then customize — or build your own if they don't fit.
 - Keep `template.json` in the site (the publish build reads it).
