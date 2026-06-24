@@ -9,3 +9,10 @@ allowBuilds:
   esbuild: true
   msw: true
   sharp: true
+
+# Exempt our own first-party packages from pnpm's supply-chain minimumReleaseAge
+# gate. The age check guards against compromised third-party uploads; @continual/*
+# is published by us and is often pinned to a version released within the cutoff
+# window, which otherwise breaks `pnpm install --frozen-lockfile` in image builds.
+minimumReleaseAgeExclude:
+  - '@continual/*'
