@@ -1,0 +1,82 @@
+---
+/**
+ * Bento — asymmetric bento grid of feature cells (title + optional
+ * eyebrow/description, per-item span), with optional centered heading above.
+ * Static (renders to HTML, ships no JS).
+ * Tier: block / section.
+ * Props:
+ *   items (required, { title: string; description?: string; eyebrow?: string; span?: "sm" | "md" | "lg" }[])
+ *   heading? (string)
+ *   subheading? (string)
+ * Prerequisites: none beyond template defaults.
+ * Usage:
+ *   import Bento from "@/components/sections/Bento.astro";
+ *   <Bento
+ *     heading="Built for scale"
+ *     items={[
+ *       { title: "Realtime", description: "Sub-100ms updates.", span: "lg" },
+ *       { title: "Secure", eyebrow: "SOC 2", span: "md" },
+ *       { title: "Simple", description: "One command." },
+ *     ]}
+ *   />
+ */
+interface Item {
+  title: string;
+  description?: string;
+  eyebrow?: string;
+  span?: "sm" | "md" | "lg";
+}
+
+interface Props {
+  items: Item[];
+  heading?: string;
+  subheading?: string;
+}
+
+const { items, heading, subheading } = Astro.props;
+
+const spanClasses: Record<NonNullable<Item["span"]>, string> = {
+  sm: "",
+  md: "sm:col-span-2",
+  lg: "sm:col-span-2 lg:row-span-2",
+};
+---
+
+<section class="px-6 py-20 sm:py-24">
+  <div class="mx-auto max-w-6xl">
+    {
+      (heading || subheading) && (
+        <div class="mx-auto mb-12 max-w-2xl text-center">
+          {heading && (
+            <h2 class="text-foreground font-heading text-3xl font-semibold tracking-tight text-balance">
+              {heading}
+            </h2>
+          )}
+          {subheading && <p class="text-muted-foreground mt-3 text-pretty">{subheading}</p>}
+        </div>
+      )
+    }
+    <div class="grid auto-rows-[minmax(12rem,auto)] gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        items.map((item) => (
+          <div
+            class:list={[
+              "bg-card flex flex-col rounded-xl border p-6 shadow-sm",
+              spanClasses[item.span ?? "sm"],
+            ]}
+          >
+            {item.eyebrow && (
+              <span class="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                {item.eyebrow}
+              </span>
+            )}
+            <h3 class="text-foreground font-heading mt-2 font-medium">{item.title}</h3>
+            {item.description && (
+              <p class="text-muted-foreground mt-2 text-sm text-pretty">{item.description}</p>
+            )}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

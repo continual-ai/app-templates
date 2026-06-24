@@ -1,0 +1,73 @@
+/*
+ * theme-seeds.css — REFERENCE examples for agent-generated theming. These are
+ * NOT a fixed menu: read them to learn the token contract + the shape of a
+ * coherent direction, then GENERATE your own to match the brand. See the
+ * template's AGENTS.md ("Theming") for the full contract and a11y rules.
+ *
+ * For PREVIEW, a direction is applied as a scoped override on the <html> element
+ * (`html[data-theme="<id>"]`) so the VariantChooser can flip between directions
+ * live. Once the user picks, BAKE the winner straight into :root / .dark in
+ * src/styles/global.css and delete the scoped overrides.
+ *
+ * Note both light and dark are defined — every direction must ship both, and
+ * each `--x-foreground` must stay legible on its `--x` (WCAG AA).
+ */
+
+/* ── Editorial — warm paper, ink text, serif headings, tighter radius. ── */
+html[data-theme="editorial"] {
+  --background: oklch(0.99 0.008 85);
+  --foreground: oklch(0.23 0.02 60);
+  --card: oklch(0.995 0.006 85);
+  --card-foreground: oklch(0.23 0.02 60);
+  --popover: oklch(0.995 0.006 85);
+  --popover-foreground: oklch(0.23 0.02 60);
+  --primary: oklch(0.46 0.12 40);
+  --primary-foreground: oklch(0.99 0.01 85);
+  --secondary: oklch(0.95 0.014 85);
+  --secondary-foreground: oklch(0.28 0.02 60);
+  --muted: oklch(0.96 0.012 85);
+  --muted-foreground: oklch(0.5 0.022 60);
+  --accent: oklch(0.94 0.02 60);
+  --accent-foreground: oklch(0.28 0.02 60);
+  --border: oklch(0.9 0.015 80);
+  --input: oklch(0.9 0.015 80);
+  --ring: oklch(0.46 0.12 40);
+  --radius: 0.4rem;
+  --font-heading: ui-serif, Georgia, "Times New Roman", serif;
+}
+html[data-theme="editorial"].dark {
+  --background: oklch(0.2 0.015 60);
+  --foreground: oklch(0.96 0.008 85);
+  --card: oklch(0.24 0.015 60);
+  --card-foreground: oklch(0.96 0.008 85);
+  --popover: oklch(0.24 0.015 60);
+  --popover-foreground: oklch(0.96 0.008 85);
+  --primary: oklch(0.72 0.12 45);
+  --primary-foreground: oklch(0.2 0.02 60);
+  --muted: oklch(0.28 0.015 60);
+  --muted-foreground: oklch(0.72 0.02 70);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.72 0.12 45);
+}
+
+/* ── Vibrant — saturated violet, generous radius. ── */
+html[data-theme="vibrant"] {
+  --primary: oklch(0.55 0.22 280);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.96 0.03 280);
+  --secondary-foreground: oklch(0.3 0.08 280);
+  --accent: oklch(0.95 0.04 280);
+  --accent-foreground: oklch(0.3 0.08 280);
+  --muted: oklch(0.97 0.01 280);
+  --muted-foreground: oklch(0.5 0.03 280);
+  --ring: oklch(0.55 0.22 280);
+  --radius: 1rem;
+}
+html[data-theme="vibrant"].dark {
+  --primary: oklch(0.62 0.2 280);
+  --primary-foreground: oklch(0.15 0.02 280);
+  --accent: oklch(0.3 0.06 280);
+  --accent-foreground: oklch(0.95 0.04 280);
+  --ring: oklch(0.62 0.2 280);
+}

@@ -1,0 +1,71 @@
+---
+/**
+ * SidebarLayout — app/dashboard shell: a sticky top header, a left sidebar that
+ * is sticky and scrolls independently on desktop and slides in as an overlay on
+ * mobile, and a scrollable main column. The mobile drawer is pure CSS (a hidden
+ * checkbox toggle) — no JavaScript, works under static output.
+ *
+ * Tier: layout (page shell; wraps the base src/layouts/Layout.astro).
+ * Props: title (required), description?, image?, canonical?, type?.
+ * Slots: "header" (top bar, right of the menu button), "sidebar" (nav), default (main).
+ * Prerequisites: base src/layouts/Layout.astro.
+ * Usage:
+ *   import SidebarLayout from "@/layouts/SidebarLayout.astro";
+ *   <SidebarLayout title="Dashboard">
+ *     <span slot="header" class="font-semibold">Acme</span>
+ *     <nav slot="sidebar" class="flex flex-col gap-1 text-sm">
+ *       <a href="/app" class="rounded-md px-2 py-1.5 hover:bg-muted">Overview</a>
+ *     </nav>
+ *     <section>…main…</section>
+ *   </SidebarLayout>
+ */
+import Layout from "@/layouts/Layout.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  type?: "website" | "article";
+}
+
+const { title, description, image, canonical, type } = Astro.props;
+---
+
+<Layout title={title} description={description} image={image} canonical={canonical} type={type}>
+  <div class="flex min-h-screen flex-col">
+    <header
+      class="bg-background/80 sticky top-0 z-40 flex h-14 items-center gap-3 border-b px-4 backdrop-blur"
+    >
+      <label
+        for="ds-sidebar"
+        class="hover:bg-muted inline-flex size-8 cursor-pointer items-center justify-center rounded-md lg:hidden"
+        aria-label="Toggle navigation"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </label>
+      <slot name="header" />
+    </header>
+
+    <div class="flex flex-1">
+      {/* Pure-CSS drawer toggle: the checkbox drives the sidebar + overlay via `peer`. */}
+      <input id="ds-sidebar" type="checkbox" class="peer hidden" />
+      <label
+        for="ds-sidebar"
+        class="bg-foreground/20 fixed inset-0 z-30 hidden peer-checked:block lg:hidden"
+        aria-hidden="true"></label>
+      <aside
+        class="bg-background fixed inset-y-0 left-0 z-40 w-64 -translate-x-full overflow-y-auto border-r px-4 py-4 transition-transform peer-checked:translate-x-0 lg:sticky lg:top-14 lg:z-0 lg:h-[calc(100vh-3.5rem)] lg:translate-x-0"
+      >
+        <slot name="sidebar" />
+      </aside>
+      <main class="min-w-0 flex-1 px-6 py-8">
+        <slot />
+      </main>
+    </div>
+  </div>
+</Layout>

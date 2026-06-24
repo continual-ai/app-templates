@@ -1,12 +1,18 @@
 ---
 import "@/styles/global.css";
+import Seo from "@/components/Seo.astro";
 
 interface Props {
   title: string;
   description?: string;
+  /** OG/Twitter preview image — site-relative path or absolute URL. */
+  image?: string;
+  /** Override the canonical URL (defaults to the current page URL). */
+  canonical?: string;
+  type?: "website" | "article";
 }
 
-const { title, description } = Astro.props;
+const { title, description, image, canonical, type } = Astro.props;
 ---
 
 <!doctype html>
@@ -15,8 +21,8 @@ const { title, description } = Astro.props;
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {description && <meta name="description" content={description} />}
-    <title>{title}</title>
+    <Seo title={title} description={description} image={image} canonical={canonical} type={type} />
+    <!-- Dark mode is opt-in: add <ThemeScript /> here and a <ThemeToggle client:load /> in the UI. -->
   </head>
   <body class="bg-background text-foreground antialiased min-h-full">
     <slot />

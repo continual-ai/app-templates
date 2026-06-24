@@ -1,0 +1,60 @@
+---
+/**
+ * MarketingLayout — contained single-column page shell (about, pricing, contact,
+ * legal). Sticky header, a centered max-width column with gutters, and a footer
+ * pinned to the bottom on short pages.
+ *
+ * Tier: layout (page shell; wraps the base src/layouts/Layout.astro).
+ * Props: title (required), description?, image?, canonical?, type? — all
+ *   forwarded to the base Layout / <Seo>.
+ * Slots: "header" (optional, sticky top), default (main content), "footer" (optional).
+ * Prerequisites: base src/layouts/Layout.astro (ships with the template).
+ * Usage:
+ *   import MarketingLayout from "@/layouts/MarketingLayout.astro";
+ *   import SiteNav from "@/components/SiteNav";
+ *   <MarketingLayout title="Pricing — Acme" description="Simple, fair pricing.">
+ *     <SiteNav slot="header" client:load brand="Acme" links={[...]} />
+ *     <section>…</section>
+ *     <Footer slot="footer" />
+ *   </MarketingLayout>
+ */
+import Layout from "@/layouts/Layout.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  type?: "website" | "article";
+}
+
+const { title, description, image, canonical, type } = Astro.props;
+const hasHeader = Astro.slots.has("header");
+const hasFooter = Astro.slots.has("footer");
+---
+
+<Layout title={title} description={description} image={image} canonical={canonical} type={type}>
+  <div class="flex min-h-screen flex-col">
+    {
+      hasHeader && (
+        <header class="bg-background/80 sticky top-0 z-40 border-b backdrop-blur">
+          <div class="mx-auto w-full max-w-5xl px-6">
+            <slot name="header" />
+          </div>
+        </header>
+      )
+    }
+    <main class="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
+      <slot />
+    </main>
+    {
+      hasFooter && (
+        <footer class="border-t">
+          <div class="mx-auto w-full max-w-5xl px-6">
+            <slot name="footer" />
+          </div>
+        </footer>
+      )
+    }
+  </div>
+</Layout>

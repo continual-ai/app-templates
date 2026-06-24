@@ -1,0 +1,57 @@
+---
+/**
+ * SectionedLayout — full-bleed landing-page shell. Sticky header, a <main> that
+ * stacks full-width sections, and a footer. Drop section blocks (<Hero/>,
+ * <Features/>, <CTA/>) as children — each block owns its own vertical padding
+ * and inner max-width, so they line up edge to edge.
+ *
+ * Tier: layout (page shell; wraps the base src/layouts/Layout.astro).
+ * Props: title (required), description?, image?, canonical?, type?.
+ * Slots: "header" (optional, sticky top), default (stacked sections), "footer" (optional).
+ * Prerequisites: base src/layouts/Layout.astro.
+ * Usage:
+ *   import SectionedLayout from "@/layouts/SectionedLayout.astro";
+ *   <SectionedLayout title="Acme — Ship faster">
+ *     <SiteNav slot="header" client:load brand="Acme" links={[...]} />
+ *     <Hero title="…" subtitle="…" primaryCta={{ label: "Start", href: "/signup" }} />
+ *     <Features heading="Why Acme" items={[...]} />
+ *     <CTA title="Ready?" cta={{ label: "Get started", href: "/signup" }} />
+ *     <Footer slot="footer" brand="Acme" />
+ *   </SectionedLayout>
+ */
+import Layout from "@/layouts/Layout.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  type?: "website" | "article";
+}
+
+const { title, description, image, canonical, type } = Astro.props;
+const hasHeader = Astro.slots.has("header");
+const hasFooter = Astro.slots.has("footer");
+---
+
+<Layout title={title} description={description} image={image} canonical={canonical} type={type}>
+  {
+    hasHeader && (
+      <header class="bg-background/80 sticky top-0 z-40 border-b backdrop-blur">
+        <div class="mx-auto w-full max-w-6xl px-6">
+          <slot name="header" />
+        </div>
+      </header>
+    )
+  }
+  <main>
+    <slot />
+  </main>
+  {
+    hasFooter && (
+      <footer class="border-t">
+        <slot name="footer" />
+      </footer>
+    )
+  }
+</Layout>

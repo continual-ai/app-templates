@@ -1,5 +1,6 @@
 {
   "name": "astro-default",
   "defaultDevPortHint": 4321,
-  "buildOutDir": "dist"
+  "buildOutDir": "dist",
+  "agentGuide": "AGENTS.md"
 }
