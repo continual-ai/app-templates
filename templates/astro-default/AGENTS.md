@@ -4,26 +4,37 @@ Guidance for any agent building or editing this site. It covers how routing/mult
 template and how to implement common things in this stack. It is more specific than the general
 create-site skill; when they conflict, this wins.
 
-This site is **Astro 6, `output: "static"`**, with React islands, Tailwind v4, shadcn-style UI
-primitives, and MDX. Everything is prerendered to static HTML at build time — there is no server
-runtime in production. (Runtime Continual API calls happen client-side via `@continual/sites-sdk`;
-see the create-site skill for that.)
+This site is a small workspace:
 
-Path alias: `@/*` → `src/*` (e.g. `@/layouts/Layout.astro`, `@/components/ui/button`).
+- `frontend/` is an **Astro 6, `output: "static"`** app with React islands, Tailwind v4,
+  shadcn-style UI primitives, and MDX.
+- `backend/` is optional. Create it only when the site needs server-side `/api/*` logic that should
+  run as a Cloudflare module Worker.
+
+Most sites should stay frontend-only. The frontend is prerendered to static HTML at build time.
+Runtime Continual API calls usually happen client-side via `@continual/sites-sdk`; see the
+create-site skill for that.
+
+Path alias inside `frontend/`: `@/*` → `frontend/src/*` (e.g. `@/layouts/Layout.astro`,
+`@/components/ui/button`).
+
+Unless a path is explicitly prefixed with `backend/`, paths like `src/...`, `public/...`,
+`components.json`, `astro.config.mjs`, and `tsconfig.json` below are frontend paths. Run frontend
+file commands from `frontend/` or prefix them with `frontend/` from the site root.
 
 ## Routing & multi-page sites
 
-Astro uses **file-based routing** under `src/pages/`. The file path becomes the URL. There is no
-router config and no route table — to add a route, add a file.
+Astro uses **file-based routing** under `frontend/src/pages/`. The file path becomes the URL. There
+is no router config and no route table — to add a route, add a file.
 
 | File                              | URL              |
 | --------------------------------- | ---------------- |
-| `src/pages/index.astro`           | `/`              |
-| `src/pages/about.astro`           | `/about`         |
-| `src/pages/pricing.astro`         | `/pricing`       |
-| `src/pages/blog/index.astro`      | `/blog`          |
-| `src/pages/blog/first-post.astro` | `/blog/first-post` |
-| `src/pages/blog/[slug].astro`     | `/blog/<slug>` (dynamic, see below) |
+| `frontend/src/pages/index.astro`           | `/`              |
+| `frontend/src/pages/about.astro`           | `/about`         |
+| `frontend/src/pages/pricing.astro`         | `/pricing`       |
+| `frontend/src/pages/blog/index.astro`      | `/blog`          |
+| `frontend/src/pages/blog/first-post.astro` | `/blog/first-post` |
+| `frontend/src/pages/blog/[slug].astro`     | `/blog/<slug>` (dynamic, see below) |
 
 `.astro`, `.md`, and `.mdx` files in `src/pages/` all become pages. Folders create nested routes.
 
@@ -69,9 +80,67 @@ scales. Add the content config only when the site genuinely needs it.
 
 - No SSR / server-rendered routes, no `Astro.request` body reading, no per-request logic. A route
   with `[slug]` but no `getStaticPaths()` will fail the build.
-- Static endpoints (non-HTML files generated at build) DO work — see `src/pages/robots.txt.ts` for
-  the pattern (`export const GET`). Use these for `robots.txt`, JSON feeds, etc., not for dynamic
-  request handling.
+- Static endpoints (non-HTML files generated at build) DO work — see
+  `frontend/src/pages/robots.txt.ts` for the pattern (`export const GET`). Use these for
+  `robots.txt`, JSON feeds, etc., not for dynamic request handling.
+
+## Optional backend package
+
+Default to frontend-only. Create `backend/` only when the requested site needs server-side behavior
+that cannot safely or efficiently run in the browser: private business logic, expensive
+calculations, server-side validation, `/api/*` endpoints for the frontend, webhook-style handlers,
+or platform/runtime mediation.
+
+Do not create `backend/` for layout/styling work, static content, simple charts, client-side
+filtering, or hard-coded mock data.
+
+If backend is needed, create:
+
+```txt
+backend/
+  package.json
+  src/index.ts
+```
+
+`backend/package.json` should be a Worker package:
+
+```json
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260525.1",
+    "esbuild": "^0.27.1",
+    "typescript": "^6.0.3"
+  }
+}
+```
+
+`backend/src/index.ts` must compile to a Cloudflare module Worker:
+
+```ts
+interface Env {}
+
+export default {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(request.url);
+
+    if (url.pathname === "/api/health") {
+      return Response.json({ ok: true });
+    }
+
+    return Response.json({ error: "Not found" }, { status: 404 });
+  },
+};
+```
+
+Only `/api` and `/api/*` requests route to the backend. Do not create Express, Fastify, Next.js API
+routes, Node HTTP servers, or long-running processes. Do not call `listen()`. Do not use Node-only
+modules or globals such as `fs`, `net`, `tls`, `child_process`, or `process`.
 
 ## Layout & page structure
 
@@ -443,8 +512,8 @@ state, success confirmation, and `ContinualRuntimeError` messaging — don't rei
   hostname.
 - Set per-page metadata (`title`, `description`, OG `image`) through `Layout` props — `<Seo>` turns
   them into title/description/canonical + OpenGraph/Twitter tags. Don't edit `<head>` directly.
-- Build output goes to `dist/` (matches `template.json`'s `buildOutDir`). Don't change it without
-  updating `template.json`.
+- Build output goes to `frontend/dist/` (matches `template.json`'s `buildOutDir`). Don't change it
+  without updating `template.json`.
 
 ## Dynamic OG images (opt-in)
 

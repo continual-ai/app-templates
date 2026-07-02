@@ -1,5 +1,7 @@
 packages:
   - "templates/*"
+  - "templates/*/frontend"
+  - "templates/*/backend"
 
 # Allow these dependencies to run their install scripts. pnpm 11 blocks all
 # install scripts by default unless explicitly allowlisted. The previous
