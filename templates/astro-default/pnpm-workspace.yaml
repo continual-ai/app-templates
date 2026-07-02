@@ -17,3 +17,7 @@
 # would silently break sites whenever new dependencies that need build
 # scripts get added.
 dangerouslyAllowAllBuilds: true
+
+packages:
+  - "frontend"
+  - "backend"
