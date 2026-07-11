@@ -3,6 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "packageManager": "pnpm@11.3.0",
+  "scripts": {
+    "check:react-blocks": "node scripts/check-react-blocks.mjs",
+    "check:visual-drift": "node scripts/check-visual-drift.mjs"
+  },
   "engines": {
     "node": ">=22.12.0"
   }
