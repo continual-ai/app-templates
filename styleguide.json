@@ -1,0 +1,56 @@
+{
+  "name": "Continual site template styleguide",
+  "route": "/_styleguide",
+  "purpose": "Rendered reference for primitives, blocks, themes, charts, data tables, app surfaces, marketing surfaces, and chat UI.",
+  "sections": [
+    {
+      "id": "theme",
+      "title": "Theme And Tokens",
+      "covers": ["light mode", "dark mode", "chart tokens", "surface contrast", "radius", "typography"]
+    },
+    {
+      "id": "core-primitives",
+      "title": "Core Primitives",
+      "covers": ["buttons", "fields", "input-group", "checkbox", "switch", "select", "avatar", "badge", "tooltip"]
+    },
+    {
+      "id": "overlays-and-commands",
+      "title": "Overlays And Commands",
+      "covers": ["dialog", "sheet", "dropdown-menu", "popover", "command", "sonner"]
+    },
+    {
+      "id": "data-display",
+      "title": "Data Display",
+      "covers": ["table", "tabs", "empty", "skeleton", "spinner", "attachment", "chart", "data-table"]
+    },
+    {
+      "id": "marketing-blocks",
+      "title": "Marketing Blocks",
+      "covers": ["hero", "feature grid", "pricing", "cta"]
+    },
+    {
+      "id": "app-blocks",
+      "title": "App Blocks",
+      "covers": ["app shell", "page header", "metric cards", "filter bar", "dashboard chart", "data table"]
+    },
+    {
+      "id": "chat-blocks",
+      "title": "Chat Blocks",
+      "covers": ["message scroller", "message", "bubble", "attachment", "marker", "prompt composer"]
+    }
+  ],
+  "requiredInteractions": [
+    "Tabs switch between table, empty, loading, chart, and data-table panels.",
+    "Dialog and sheet open and close.",
+    "Sonner toast appears.",
+    "Chat composer appends a message.",
+    "Data table search, sorting, selection, and pagination respond.",
+    "Mobile viewport has no page-level horizontal overflow."
+  ],
+  "visualGuardrails": [
+    "App surfaces use compact headers instead of marketing heroes.",
+    "App surfaces avoid rounded-2xl or larger custom wrappers.",
+    "App surfaces avoid text-4xl or larger headings.",
+    "App surfaces avoid py-20 or larger vertical padding."
+  ]
+}

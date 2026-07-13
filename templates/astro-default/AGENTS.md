@@ -180,7 +180,7 @@ these up over rebuilding them:
 
 These live in the scaffold unused until you import them. Delete any you don't use before publishing.
 
-## Composing from layouts & blocks
+## Composing from shadcn, layouts & blocks
 
 There's a shared library next to the templates — a **starting kit to move fast, not a fence.** Reach
 for it first for common page shells and sections so you don't redo the boring parts — but it's a
@@ -188,7 +188,18 @@ vocabulary, not the whole language. When the design needs something the library 
 your own** block/layout/component; that's expected, not a workaround. It's organized as a small design
 system:
 
-`ui primitives → blocks (sections) → layouts (page shells) → base Layout (html/head/telemetry)`
+`shadcn/ui primitives → React blocks → Astro layouts/content helpers → base Layout (html/head/telemetry)`
+
+The shadcn component set is broad by default: app shells, sidebar, sheet/dialog/popover/dropdowns,
+tables, tabs, forms, empty/skeleton/spinner states, sonner, Recharts-backed charts, and the
+official chat primitives (`message-scroller`, `message`, `bubble`, `attachment`, `marker`). Prefer
+these primitives before writing custom controls.
+
+When building app-like pages in Astro, keep them visually closer to the React app template than the
+marketing blocks: compact page headers, `text-2xl` or smaller route titles, tight vertical rhythm,
+and custom wrappers at `rounded-lg` or smaller. Do not use marketing heroes, `py-20+`,
+`min-h-screen`, `text-4xl+`, `rounded-2xl+`, or pill-shaped page containers for dashboards,
+settings, queues, data browsers, CRUD workflows, or chat surfaces.
 
 - **Layouts** (`/opt/site-templates/layouts/*.astro`) — full **page shells** that wrap the base
   `Layout` and own the hard structural/responsive behavior (sticky header, sidebar with independent
@@ -196,33 +207,37 @@ system:
   `MarketingLayout` (contained pages), `SectionedLayout` (full-bleed landing), `SidebarLayout`
   (app/dashboard), `DocsLayout` (docs: nav + content + TOC rail), `BlogPostLayout` (single post:
   header + cover + prose — see "Blog / content").
-- **Blocks** (`/opt/site-templates/blocks/**`) — drop-in **sections**. Static `.astro` unless marked
-  (island):
-  - Heroes & content: `sections/Hero.astro`, `sections/HeroSplit.astro`, `sections/Features.astro`,
-    `sections/Bento.astro` (asymmetric grid), `sections/CTA.astro`, `sections/Footer.astro`.
-  - Marketing: `sections/Pricing.astro` (tiers + popular), `sections/Stats.astro` (metrics band),
-    `sections/Testimonials.astro`, `sections/LogoCloud.astro`, `sections/Team.astro`,
-    `sections/Gallery.astro`.
-  - Interactive (island, needs a `client:` directive): `nav/SiteNav.tsx` (mobile menu),
-    `sections/FAQ.tsx` (accordion), `sections/Newsletter.tsx` (email capture).
-  - Content: `sections/BlogIndex.astro` (post cards — see "Blog / content").
-  - Motion: `motion/Reveal.tsx` (scroll reveal — see "Motion").
-  - MDX: `mdx/Callout.astro`, `mdx/Figure.astro`, `mdx/CodeBlock.astro` (see "Blog / content").
+- **React blocks** (`/opt/site-templates/blocks/react/**`) — canonical shared UI for both this Astro
+  template and `react-app`:
+  - Marketing: `marketing/Hero.tsx`, `HeroSplit.tsx`, `Features.tsx`, `Bento.tsx`, `Pricing.tsx`,
+    `Stats.tsx`, `Testimonials.tsx`, `LogoCloud.tsx`, `Team.tsx`, `Gallery.tsx`, `CTA.tsx`,
+    `Footer.tsx`, plus `FAQ.tsx` and `Newsletter.tsx`.
+  - App: `app/AppShell.tsx`, `SidebarNav.tsx`, `PageHeader.tsx`, `MetricCard.tsx`,
+    `ChartCard.tsx`, `DataTable.tsx`, `FilterBar.tsx`, `EmptyState.tsx`, `SettingsForm.tsx`.
+  - Chat: `chat/ChatShell.tsx`, `MessageList.tsx`, `PromptComposer.tsx`, `AttachmentRow.tsx`,
+    `StatusMarker.tsx`.
+  - Nav/motion: `nav/SiteNav.tsx`, `motion/Reveal.tsx`.
+- **Astro helpers** (`/opt/site-templates/blocks/astro/**`) — content/SEO helpers that are specific
+  to Astro: `sections/BlogIndex.astro`, `mdx/*`, `content/content.config.ts`, `og/og-route.ts`.
+
+For machine-readable design-system context, read `/opt/site-templates/design-system.json` and
+`/opt/site-templates/styleguide.json` before composing new UI.
+Run `pnpm check:visual-drift` from `/opt/site-templates` when editing app-like shared blocks.
 
 **How to use one — copy it into the site, then import and fill props:**
 
 ```sh
-mkdir -p src/components/sections
+mkdir -p src/components/marketing
 cp /opt/site-templates/layouts/SectionedLayout.astro src/layouts/
-cp /opt/site-templates/blocks/sections/Hero.astro     src/components/sections/
-cp /opt/site-templates/blocks/nav/SiteNav.tsx         src/components/
+cp /opt/site-templates/blocks/react/marketing/Hero.tsx src/components/marketing/
+cp /opt/site-templates/blocks/react/nav/SiteNav.tsx    src/components/
 ```
 
 ```astro
 ---
 import SectionedLayout from "@/layouts/SectionedLayout.astro";
 import SiteNav from "@/components/SiteNav";
-import Hero from "@/components/sections/Hero.astro";
+import Hero from "@/components/marketing/Hero";
 ---
 <SectionedLayout title="Acme — Ship faster">
   <SiteNav slot="header" client:load brand="Acme" links={[{ label: "Pricing", href: "/pricing" }]} />
@@ -236,7 +251,7 @@ import Hero from "@/components/sections/Hero.astro";
   prerequisites, usage). Read it before copying. To browse the whole library at once:
 
   ```sh
-  head -n 28 /opt/site-templates/layouts/*.astro /opt/site-templates/blocks/*/*
+  head -n 28 /opt/site-templates/layouts/*.astro /opt/site-templates/blocks/react/*/* /opt/site-templates/blocks/astro/*/*
   ```
 
   The template also ships `src/pages/_styleguide.astro` — a hidden reference (not built/served;
@@ -251,16 +266,16 @@ import Hero from "@/components/sections/Hero.astro";
 - **Customize after copying** — the files are now yours; edit content, classes, and props freely.
 - **Build your own when it fits better.** The library is a head start, not the whole vocabulary — if a
   section, layout, or component the site needs isn't here (or a canned one would compromise the
-  design), author it directly in `src/components/…`. Hold custom pieces to the same bar: design tokens
-  (never raw colors), `cn()` for class merging, static `.astro` by default with a React island only
-  where interaction requires it, WCAG AA — and give a reusable one the same header comment so it stays
-  self-documenting. Composing and authoring are equally first-class.
+  design), author it directly in `src/components/…`. Hold custom pieces to the same bar: shadcn
+  primitives first, design tokens (never raw colors), `cn()` for class merging, React components for
+  reusable UI, Astro only for page/content/metadata glue, WCAG AA — and give a reusable one the same
+  header comment so it stays self-documenting. Composing and authoring are equally first-class.
 
 ## Motion
 
 Keep motion subtle — it should make a site feel considered, not gimmicky. Two tools:
 
-- **`motion/Reveal.tsx`** — a dependency-light island that fades/slides content up as it scrolls into
+- **`blocks/react/motion/Reveal.tsx`** — a dependency-light island that fades/slides content up as it scrolls into
   view (IntersectionObserver). Wrap a section, or pass `stagger` to cascade its direct children. It
   respects `prefers-reduced-motion` and degrades safely without JS (content is never left hidden).
   Copy it in and use with a client directive:
@@ -284,7 +299,7 @@ Keep motion subtle — it should make a site feel considered, not gimmicky. Two 
 A typed blog/content system ships in the library but is **not baked into every site** — enable it
 only when the site needs articles/docs. One-time setup:
 
-1. **Collection config:** copy `/opt/site-templates/blocks/content/content.config.ts` to
+1. **Collection config:** copy `/opt/site-templates/blocks/astro/content/content.config.ts` to
    `src/content.config.ts`. It defines a `blog` collection (frontmatter: `title`, `description`,
    `date`, `author?`, `image?`, `draft?`) loaded from `src/content/blog/**/*.{md,mdx}`.
 2. **Typography:** `pnpm add -D @tailwindcss/typography`, then add `@plugin "@tailwindcss/typography";`
@@ -294,7 +309,7 @@ only when the site needs articles/docs. One-time setup:
 4. **Routes:** add `src/pages/blog/[...slug].astro` (uses `getCollection` + `render` and
    `BlogPostLayout`, with `<Content components={{ pre: CodeBlock }} />`) and `src/pages/blog/index.astro`
    (maps `getCollection("blog")` into the `BlogIndex` block's `posts` prop).
-5. **MDX components** (`/opt/site-templates/blocks/mdx/`) — copy to `src/components/mdx/`:
+5. **MDX components** (`/opt/site-templates/blocks/astro/mdx/`) — copy to `src/components/mdx/`:
    - `Callout.astro` — info / warn / success aside (note: the base palette has no green/amber, so
      variants map to muted/primary/destructive tokens).
    - `Figure.astro` — image + caption.
@@ -522,7 +537,7 @@ social card from the title/description instead of hand-making images, enable the
 because it pulls a rendering dependency:
 
 1. `pnpm add astro-og-canvas`
-2. copy `/opt/site-templates/blocks/og/og-route.ts` to `src/pages/og/[...route].ts`. It enumerates the
+2. copy `/opt/site-templates/blocks/astro/og/og-route.ts` to `src/pages/og/[...route].ts`. It enumerates the
    pages to render (by default, the blog collection) and emits a PNG per page at build.
 3. point `Seo` at the generated image, e.g. `image={`/og/${entry.id}.png`}` on a post.
 

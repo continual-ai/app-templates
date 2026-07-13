@@ -7,6 +7,22 @@ Starter templates for sites scaffolded by Continual's `create-site` skill. Each 
 ## Templates
 
 - [`astro-default`](./templates/astro-default) — Astro + React + Tailwind starter (the default).
+- [`react-app`](./templates/react-app) — Vite + React + Tailwind starter for dashboards,
+  internal tools, portals, and other app-like sites.
+
+## Shared design system
+
+- `design-system.json` is the machine-readable manifest for agents. It lists stack choices, rules,
+  primitives, blocks, tokens, and verification commands.
+- `styleguide.json` describes the rendered `_styleguide` coverage and expected interactions.
+- `blocks/react/**` is the canonical shared block library. Copy these TSX blocks into either
+  template for marketing sections, app/dashboard patterns, chat UI, nav, and motion.
+- `blocks/astro/**` contains Astro-only content helpers: MDX components, blog index/content config,
+  and dynamic OG route support.
+- Both templates use the same shadcn/ui token contract and ship a broad primitive set, including the
+  official shadcn chat primitives and Recharts-backed chart primitives.
+- `pnpm check:visual-drift` catches app-surface drift such as marketing heroes, oversized route
+  headings, hero-scale padding, and too-round custom wrappers.
 
 ## Adding or updating a template
 

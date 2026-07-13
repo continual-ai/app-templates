@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "continual-site-templates-design-system",
+  "version": "2026-07-06",
+  "sourceOfTruth": {
+    "blocks": "blocks/react",
+    "astroOnly": "blocks/astro",
+    "templates": ["templates/astro-default", "templates/react-app"]
+  },
+  "stack": {
+    "reactApp": ["Vite", "React", "TypeScript", "React Router", "Tailwind v4", "shadcn/ui"],
+    "astroDefault": ["Astro", "React islands", "TypeScript", "Tailwind v4", "shadcn/ui", "MDX"],
+    "charts": ["recharts", "src/components/ui/chart.tsx"]
+  },
+  "rules": [
+    "Prefer shadcn primitives from src/components/ui before custom controls.",
+    "Use blocks/react as the canonical shared block format; Astro can render React components.",
+    "Keep shared block props JSON-serializable so Astro can pass props safely.",
+    "Use blocks/astro only for Astro content, MDX, SEO, OG, and collection helpers.",
+    "Do not introduce raw UI colors; use Tailwind token utilities backed by src/styles/global.css.",
+    "Use lucide icons for icon buttons and navigation.",
+    "Keep app surfaces dense, scannable, and workflow-oriented.",
+    "For dashboards, internal tools, CRUD, queues, settings, data browsers, and chat surfaces, do not start with a marketing hero.",
+    "Use compact page headers for app surfaces: text-2xl or smaller, tight supporting copy, and actions aligned to the right.",
+    "Keep custom app wrappers at rounded-lg or smaller; use larger radii only when inherited from shadcn primitives.",
+    "Avoid hero-scale app spacing such as py-20, py-24, min-h-screen, or centered landing-page composition."
+  ],
+  "visualGuardrails": {
+    "appSurfaces": {
+      "preferred": [
+        "PageHeader",
+        "FilterBar",
+        "MetricCard",
+        "ChartCard",
+        "DataTable",
+        "EmptyState",
+        "SettingsForm",
+        "ChatShell",
+        "shadcn primitives"
+      ],
+      "avoid": [
+        "marketing hero sections",
+        "oversized display headings",
+        "decorative card stacks",
+        "card-in-card layouts",
+        "large pill-shaped surfaces",
+        "one-note gradient or orb decoration",
+        "large page-level vertical padding"
+      ],
+      "blockedClassPatterns": [
+        "rounded-2xl",
+        "rounded-3xl",
+        "rounded-4xl",
+        "rounded-full",
+        "text-4xl",
+        "text-5xl",
+        "text-6xl",
+        "py-20",
+        "py-24",
+        "py-32",
+        "min-h-screen",
+        "h-screen"
+      ],
+      "checkCommand": "pnpm check:visual-drift"
+    }
+  },
+  "tokens": {
+    "css": "src/styles/global.css",
+    "colors": [
+      "background",
+      "foreground",
+      "card",
+      "popover",
+      "primary",
+      "secondary",
+      "muted",
+      "accent",
+      "destructive",
+      "border",
+      "input",
+      "ring",
+      "chart-1",
+      "chart-2",
+      "chart-3",
+      "chart-4",
+      "chart-5",
+      "sidebar"
+    ],
+    "themeModes": ["light", "dark"],
+    "radius": ["sm", "md", "lg", "xl", "2xl", "3xl", "4xl"],
+    "fonts": ["font-sans", "font-heading"]
+  },
+  "primitives": [
+    "attachment",
+    "avatar",
+    "badge",
+    "bubble",
+    "button",
+    "card",
+    "chart",
+    "checkbox",
+    "command",
+    "dialog",
+    "dropdown-menu",
+    "empty",
+    "field",
+    "input",
+    "input-group",
+    "label",
+    "marker",
+    "message",
+    "message-scroller",
+    "popover",
+    "select",
+    "separator",
+    "sheet",
+    "sidebar",
+    "skeleton",
+    "sonner",
+    "spinner",
+    "switch",
+    "table",
+    "tabs",
+    "textarea",
+    "tooltip"
+  ],
+  "blocks": {
+    "marketing": [
+      "Hero",
+      "HeroSplit",
+      "Features",
+      "Bento",
+      "Pricing",
+      "Stats",
+      "Testimonials",
+      "LogoCloud",
+      "Team",
+      "Gallery",
+      "CTA",
+      "Footer",
+      "FAQ",
+      "Newsletter"
+    ],
+    "app": [
+      "AppShell",
+      "SidebarNav",
+      "PageHeader",
+      "MetricCard",
+      "ChartCard",
+      "DataTable",
+      "FilterBar",
+      "EmptyState",
+      "SettingsForm"
+    ],
+    "chat": ["ChatShell", "MessageList", "PromptComposer", "AttachmentRow", "StatusMarker"],
+    "nav": ["SiteNav"],
+    "motion": ["Reveal"]
+  },
+  "verification": {
+    "commands": [
+      "pnpm check:react-blocks",
+      "pnpm check:visual-drift",
+      "pnpm -r check",
+      "pnpm --filter @continual/astro-site build",
+      "pnpm --filter @continual/react-app-site build"
+    ],
+    "styleguideRoutes": {
+      "reactApp": "/_styleguide",
+      "astroDefault": "src/pages/_styleguide.astro is hidden; temporarily expose only for local visual QA"
+    }
+  }
+}

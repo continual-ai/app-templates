@@ -42,11 +42,11 @@ export default defineConfig({
       // blocks unknown hosts by default; we allow all because the proxy
       // controls who can reach us.
       allowedHosts: true,
-      // Let the dev server read files from above the project dir — so the React
-      // client runtime resolves when deps are hoisted to a workspace root (pnpm
-      // workspace). Two levels up is the repo/workspace root both for this
-      // template and for a site at <repo>/sites/<slug>; harmless otherwise.
-      fs: { allow: [resolve(projectRoot, "../..")] },
+      // Let the dev server read files from above the project dir — so fonts and
+      // React client runtime resolve when deps are hoisted to a workspace root
+      // (pnpm workspace). Three levels up is this repo root; two levels up
+      // covers copied sites at <repo>/sites/<slug>.
+      fs: { allow: [resolve(projectRoot, "../.."), resolve(projectRoot, "../../..")] },
     },
   },
 });

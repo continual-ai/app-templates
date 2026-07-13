@@ -16,6 +16,7 @@
  * it rendered; the catalog below is the index of what's available.
  */
 import Layout from "@/layouts/Layout.astro";
+import StyleguidePreview from "@/components/StyleguidePreview";
 
 const tokenPairs: Array<[string, string, string]> = [
   ["bg-background", "text-foreground", "background / foreground"],
@@ -40,7 +41,7 @@ const catalog: Array<{ group: string; items: Array<[string, string]> }> = [
     ],
   },
   {
-    group: "Sections — /opt/site-templates/blocks/sections/",
+    group: "React marketing blocks — /opt/site-templates/blocks/react/marketing/",
     items: [
       ["Hero", "Centered hero: eyebrow + headline + subhead + CTAs."],
       ["HeroSplit", "Two-column hero: copy left, visual right."],
@@ -54,19 +55,36 @@ const catalog: Array<{ group: string; items: Array<[string, string]> }> = [
       ["Gallery", "Responsive image grid with captions."],
       ["CTA", "Centered call-to-action band."],
       ["Footer", "Multi-column footer."],
-      ["BlogIndex", "Post cards (maps a content collection)."],
       ["FAQ (island)", "Accordion of Q&A — client:visible."],
       ["Newsletter (island)", "Email capture — client:visible."],
     ],
   },
   {
-    group: "Nav / motion / mdx",
+    group: "React app/chat blocks",
     items: [
-      ["nav/SiteNav (island)", "Header nav with mobile menu — client:load."],
-      ["motion/Reveal (island)", "Scroll fade/slide-up with stagger — client:visible."],
-      ["mdx/Callout", "Info / warn / success aside."],
-      ["mdx/Figure", "Image + caption."],
-      ["mdx/CodeBlock", "Code with a copy button (MDX `pre` override)."],
+      ["app/AppShell", "Dashboard shell with sidebar + top bar."],
+      ["app/PageHeader", "Route title, description, and action row."],
+      ["app/MetricCard", "KPI card with trend indicator."],
+      ["app/ChartCard", "Recharts-backed chart card using shared chart tokens."],
+      ["app/DataTable", "Searchable, sortable, selectable, paginated table pattern."],
+      ["app/FilterBar", "Search/filter/action toolbar."],
+      ["app/EmptyState", "Empty-state composition using shadcn Empty."],
+      ["chat/ChatShell", "Transport-agnostic chat frame."],
+      ["chat/MessageList", "Message scroller + message rows."],
+      ["chat/PromptComposer", "Textarea prompt composer."],
+      ["chat/AttachmentRow", "Attachment strip."],
+      ["chat/StatusMarker", "Streaming/status marker."],
+    ],
+  },
+  {
+    group: "Nav / motion / Astro-only content",
+    items: [
+      ["react/nav/SiteNav (island)", "Header nav with mobile menu — client:load."],
+      ["react/motion/Reveal (island)", "Scroll fade/slide-up with stagger — client:visible."],
+      ["astro/sections/BlogIndex", "Post cards (maps a content collection)."],
+      ["astro/mdx/Callout", "Info / warn / success aside."],
+      ["astro/mdx/Figure", "Image + caption."],
+      ["astro/mdx/CodeBlock", "Code with a copy button (MDX `pre` override)."],
     ],
   },
 ];
@@ -128,6 +146,11 @@ const catalog: Array<{ group: string; items: Array<[string, string]> }> = [
         <p class="text-foreground text-base">Body — the quick brown fox jumps over the lazy dog.</p>
         <p class="text-muted-foreground text-sm">Muted small — supporting copy and captions.</p>
       </div>
+    </section>
+
+    <section class="flex flex-col gap-4">
+      <h2 class="text-foreground font-heading text-xl font-semibold">Primitive & chat preview</h2>
+      <StyleguidePreview client:load />
     </section>
 
     <section class="flex flex-col gap-4">
