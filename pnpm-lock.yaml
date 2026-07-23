@@ -103,8 +103,8 @@ importers:
   templates/react-app/frontend:
     dependencies:
       '@continual/sites-sdk':
-        specifier: ^0.3.2
-        version: 0.3.2
+        specifier: ^0.5.0
+        version: 0.5.0
       '@fontsource-variable/geist':
         specifier: ^5.2.8
         version: 5.2.9
