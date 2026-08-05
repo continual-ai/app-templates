@@ -5,7 +5,7 @@ import Seo from "@/components/Seo.astro";
 interface Props {
   title: string;
   description?: string;
-  /** OG/Twitter preview image — site-relative path or absolute URL. */
+  /** OG/Twitter preview image — App-relative path or absolute URL. */
   image?: string;
   /** Override the canonical URL (defaults to the current page URL). */
   canonical?: string;
@@ -26,9 +26,5 @@ const { title, description, image, canonical, type } = Astro.props;
   </head>
   <body class="bg-background text-foreground antialiased min-h-full">
     <slot />
-    <script>
-      import { initTelemetry } from "@continual/sites-sdk/telemetry";
-      initTelemetry();
-    </script>
   </body>
 </html>

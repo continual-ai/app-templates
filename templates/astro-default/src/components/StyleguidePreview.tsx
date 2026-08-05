@@ -756,7 +756,7 @@ function AppSection() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="font-heading text-2xl font-semibold tracking-normal">Dashboard</h3>
-                <p className="text-sm text-muted-foreground">Operational preview for app-style generated sites.</p>
+                <p className="text-sm text-muted-foreground">Operational preview for generated Apps.</p>
               </div>
               <Button>
                 <CreditCard className="size-4" />

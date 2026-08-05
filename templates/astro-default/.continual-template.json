@@ -1,6 +1,8 @@
 {
   "name": "astro-default",
   "defaultDevPortHint": 4321,
-  "buildOutDir": "frontend/dist",
+  "framework": "astro",
+  "entry": "index.html",
+  "buildOutDir": "dist",
   "agentGuide": "AGENTS.md"
 }

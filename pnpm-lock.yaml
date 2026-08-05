@@ -8,9 +8,7 @@ importers:
 
   .: {}
 
-  templates/astro-default: {}
-
-  templates/astro-default/frontend:
+  templates/astro-default:
     dependencies:
       '@astrojs/mdx':
         specifier: ^5.0.4
@@ -21,9 +19,6 @@ importers:
       '@astrojs/sitemap':
         specifier: ^3.7.2
         version: 3.7.2
-      '@continual/sites-sdk':
-        specifier: ^0.5.0
-        version: 0.5.0
       '@fontsource-variable/geist':
         specifier: ^5.2.8
         version: 5.2.9
@@ -98,13 +93,8 @@ importers:
         specifier: ^7.3.3
         version: 7.3.3(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.3)(yaml@2.9.0)
 
-  templates/react-app: {}
-
-  templates/react-app/frontend:
+  templates/react-app:
     dependencies:
-      '@continual/sites-sdk':
-        specifier: ^0.5.0
-        version: 0.5.0
       '@fontsource-variable/geist':
         specifier: ^5.2.8
         version: 5.2.9
@@ -389,10 +379,6 @@ packages:
   '@clack/prompts@1.4.0':
     resolution: {integrity: sha512-S0My7XPGIgpRWMDG8uRqalbgT+a6FmCUdOW+HaIOVVpUPHOb7RrpvjTjiODadKp06fsrVDJZlIzc6yCTp4AnxA==}
     engines: {node: '>= 20.12.0'}
-
-  '@continual/sites-sdk@0.5.0':
-    resolution: {integrity: sha512-0daE0teEmLLJAnlCAbzdnurVdp20fPT026J4VI/xoB/SJqZcVEkRfXcUVGsw4QKMBci7Hn23TY2feIceCQn65A==}
-    engines: {node: '>=24.0.0'}
 
   '@dotenvx/dotenvx@1.66.0':
     resolution: {integrity: sha512-qlQFhHUjhRDybrinqLAD0MClVZDOrsq80O8eD5iSjz3Qa/4f3Jg7SQrOaSobrRyP1QaWIYLGtGpj2c7H0D8NUw==}
@@ -5010,8 +4996,6 @@ snapshots:
       fast-string-width: 3.0.2
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
-
-  '@continual/sites-sdk@0.5.0': {}
 
   '@dotenvx/dotenvx@1.66.0':
     dependencies:

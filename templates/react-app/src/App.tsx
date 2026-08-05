@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
+import { createHashRouter, Navigate, RouterProvider } from "react-router";
 
 import { AppLayout } from "@/components/AppLayout";
 import { Dashboard } from "@/routes/Dashboard";
@@ -7,7 +7,10 @@ import { NotFound } from "@/routes/NotFound";
 import { Settings } from "@/routes/Settings";
 const Styleguide = lazy(() => import("@/routes/Styleguide").then((module) => ({ default: module.Styleguide })));
 
-const router = createBrowserRouter([
+// Hash routing keeps nested screens refresh-safe when this bundle is mounted at
+// any defineApp route. The App runtime serves the entry route and packaged assets,
+// but does not treat arbitrary browser-history paths as SPA fallbacks.
+const router = createHashRouter([
   {
     path: "/",
     element: <AppLayout />,

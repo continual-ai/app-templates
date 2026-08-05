@@ -1,7 +1,5 @@
 packages:
   - "templates/*"
-  - "templates/*/frontend"
-  - "templates/*/backend"
 
 # Allow these dependencies to run their install scripts. pnpm 11 blocks all
 # install scripts by default unless explicitly allowlisted. The previous
@@ -11,10 +9,3 @@ allowBuilds:
   esbuild: true
   msw: true
   sharp: true
-
-# Exempt our own first-party packages from pnpm's supply-chain minimumReleaseAge
-# gate. The age check guards against compromised third-party uploads; @continual/*
-# is published by us and is often pinned to a version released within the cutoff
-# window, which otherwise breaks `pnpm install --frozen-lockfile` in image builds.
-minimumReleaseAgeExclude:
-  - '@continual/*'

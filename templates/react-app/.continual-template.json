@@ -1,6 +1,8 @@
 {
   "name": "react-app",
   "defaultDevPortHint": 5173,
-  "buildOutDir": "frontend/dist",
+  "framework": "vite-react",
+  "entry": "index.html",
+  "buildOutDir": "dist",
   "agentGuide": "AGENTS.md"
 }

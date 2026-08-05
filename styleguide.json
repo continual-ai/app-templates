@@ -1,5 +1,5 @@
 {
-  "name": "Continual site template styleguide",
+  "name": "Continual App template styleguide",
   "route": "/_styleguide",
   "purpose": "Rendered reference for primitives, blocks, themes, charts, data tables, app surfaces, marketing surfaces, and chat UI.",
   "sections": [

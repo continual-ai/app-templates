@@ -2,7 +2,7 @@
  * VariantChooser — proposal-time floating control for letting the user pick a
  * direction. Renders as a small bubble in the corner (like a dev-tools button)
  * that expands into a panel listing each option with its agent-written
- * description. This is NOT site content: drop it in while proposing options,
+ * description. This is NOT App content: drop it in while proposing options,
  * then bake the chosen variant and delete this control + the alternatives.
  *
  * Two modes (one component):

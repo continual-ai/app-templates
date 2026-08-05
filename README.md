@@ -1,14 +1,18 @@
-# Continual site templates
+# Continual App templates
 
-Starter templates for sites scaffolded by Continual's `create-site` skill. Each subdirectory under
-`templates/` is a self-contained template that the agent copies into a project repo's
-`sites/<slug>/` directory.
+Starter templates for source-owned Continual Apps. Each directory under `templates/` is copied
+directly into a project repository at `apps/<app-id>/` and is declared with `defineApp` in the
+project's `continual.config.ts`.
 
 ## Templates
 
-- [`astro-default`](./templates/astro-default) — Astro + React + Tailwind starter (the default).
+- [`astro-default`](./templates/astro-default) — Astro + React + Tailwind starter for websites,
+  documentation, and content-heavy Apps.
 - [`react-app`](./templates/react-app) — Vite + React + Tailwind starter for dashboards,
-  internal tools, portals, and other app-like sites.
+  internal tools, portals, and interactive Apps.
+
+Each template owns a `package.json` with a root `build` script and emits `dist/index.html` beside
+the source `index.html`. That is the layout expected by Continual preview and publishing.
 
 ## Shared design system
 
@@ -24,24 +28,24 @@ Starter templates for sites scaffolded by Continual's `create-site` skill. Each 
 - `pnpm check:visual-drift` catches app-surface drift such as marketing heroes, oversized route
   headings, hero-scale padding, and too-round custom wrappers.
 
+## App framework contract
+
+- App source is owned by the customer and lives under `apps/`.
+- The project declares Apps with `defineApp({ entry: file("apps/<app-id>/index.html") })`.
+- Business data and server behavior belong to backend Objects and Actions declared by the project.
+- Browser code calls those Actions through relative `/api/actions/<action-id>` routes.
+- Templates do not depend on the legacy `@continual/sites-sdk`, Sites telemetry, Sites preview
+  routes, or template-owned Worker backends.
+
 ## Adding or updating a template
 
 1. Edit the template files directly.
-2. Make sure `package.json` keeps `@continual/sites-sdk` as a normal npm range (e.g. `^0.1.0`).
-3. Update the lockfile (`pnpm install` at the template root) and commit it.
-4. Bump the template version if you make a breaking change.
-
-## SDK
-
-The `@continual/sites-sdk` package is **not** developed here. It's published to npm as
-[`@continual/sites-sdk`](https://www.npmjs.com/package/@continual/sites-sdk) and templates depend
-on it the same way they depend on any other npm package.
-
-To pick up a new SDK version, bump the version in each template's `package.json`, refresh the
-lockfile, and commit.
+2. Keep the template self-contained and free of project-specific backend definitions.
+3. Run `pnpm install` at the repository root to update the lockfile.
+4. Run `pnpm check` and `pnpm build` before committing.
 
 ## How the templates get into a sandbox
 
-The `create-site` skill drives the scaffold flow. Templates are baked into the Daytona base image
-under `/opt/site-templates/`. The skill runs a best-effort `git pull` before scaffolding so
-template fixes ship without a snapshot rebake.
+The `create-app` skill drives the scaffold flow. Templates are baked into the sandbox image under
+`/opt/app-templates/`. The skill refreshes this repository before scaffolding when network access
+is available.

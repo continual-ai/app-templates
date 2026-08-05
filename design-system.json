@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "name": "continual-site-templates-design-system",
+  "name": "continual-app-templates-design-system",
   "version": "2026-07-06",
   "sourceOfTruth": {
     "blocks": "blocks/react",
@@ -161,8 +161,8 @@
       "pnpm check:react-blocks",
       "pnpm check:visual-drift",
       "pnpm -r check",
-      "pnpm --filter @continual/astro-site build",
-      "pnpm --filter @continual/react-app-site build"
+      "pnpm --filter @continual/astro-app-template build",
+      "pnpm --filter @continual/react-app-template build"
     ],
     "styleguideRoutes": {
       "reactApp": "/_styleguide",

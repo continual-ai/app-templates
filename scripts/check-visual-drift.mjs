@@ -7,14 +7,14 @@ import { execFileSync } from "node:child_process";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const scanRoots = [
-  "templates/react-app/frontend/src/components/AppLayout.tsx",
-  "templates/react-app/frontend/src/routes",
+  "templates/react-app/src/components/AppLayout.tsx",
+  "templates/react-app/src/routes",
   "blocks/react/app",
   "blocks/react/chat",
 ];
 
 const ignoredPathPatterns = [
-  /templates\/react-app\/frontend\/src\/routes\/Styleguide\.tsx$/,
+  /templates\/react-app\/src\/routes\/Styleguide\.tsx$/,
 ];
 
 const rules = [

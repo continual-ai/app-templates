@@ -11,7 +11,7 @@ import tailwindcss from "@tailwindcss/vite";
 const projectRoot = dirname(fileURLToPath(import.meta.url));
 
 // `site` is the absolute URL the build is being deployed under. Continual
-// injects SITE_URL at build time (the published hostname for this site).
+// injects SITE_URL at build time (the published hostname for this App).
 // During local dev (or when SITE_URL is unset) we fall back to a placeholder
 // so the sitemap integration has something to work with — those URLs aren't
 // shipped to production builds anyway.
@@ -23,7 +23,7 @@ export default defineConfig({
   output: "static",
   integrations: [react(), mdx(), sitemap()],
   // Hide the dev-mode toolbar so users iterating in the editor iframe don't
-  // see Astro branding or floating dev UI that isn't part of their site.
+  // see Astro branding or floating dev UI that isn't part of their App.
   devToolbar: { enabled: false },
   server: {
     host: "0.0.0.0",
@@ -31,7 +31,7 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
-    // Force a single React instance. When a site is installed inside a pnpm
+    // Force a single React instance. When an App is installed inside a pnpm
     // workspace, React can otherwise resolve to two copies and island hooks
     // fail at runtime with "Cannot read properties of null (reading 'useState')".
     // Harmless for a standalone install.
@@ -45,7 +45,7 @@ export default defineConfig({
       // Let the dev server read files from above the project dir — so fonts and
       // React client runtime resolve when deps are hoisted to a workspace root
       // (pnpm workspace). Three levels up is this repo root; two levels up
-      // covers copied sites at <repo>/sites/<slug>.
+      // covers copied Apps at <repo>/apps/<app-id>.
       fs: { allow: [resolve(projectRoot, "../.."), resolve(projectRoot, "../../..")] },
     },
   },

@@ -16,7 +16,7 @@
  *   once? (boolean)       — animate only the first time in view (default true)
  * Prerequisites: none beyond the template defaults.
  * Use sparingly — one reveal per section (or a single staggered group), not on
- * every element, so the site feels considered rather than gimmicky.
+ * every element, so the App feels considered rather than gimmicky.
  */
 import * as React from "react";
 

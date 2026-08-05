@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Check } from "lucide-react";
-import { callContinualToolJson, ContinualRuntimeError } from "@continual/sites-sdk";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,8 +8,8 @@ import { cn } from "@/lib/utils";
 type Status = "idle" | "submitting" | "success" | "error";
 
 export interface NewsletterProps {
-  action?: string;
-  tool?: { appInstallationId: string; name: string };
+  /** The id of a project Action that accepts { email }. */
+  actionId: string;
   heading?: string;
   blurb?: string;
   cta?: string;
@@ -18,7 +17,7 @@ export interface NewsletterProps {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function Newsletter({ action, tool, heading, blurb, cta = "Subscribe" }: NewsletterProps) {
+export function Newsletter({ actionId, heading, blurb, cta = "Subscribe" }: NewsletterProps) {
   const [status, setStatus] = React.useState<Status>("idle");
   const [error, setError] = React.useState<string | null>(null);
 
@@ -34,31 +33,17 @@ export function Newsletter({ action, tool, heading, blurb, cta = "Subscribe" }: 
     setStatus("submitting");
     setError(null);
     try {
-      if (action) {
-        const res = await fetch(action, {
-          method: "POST",
-          headers: { Accept: "application/json" },
-          body: new FormData(form),
-        });
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-      } else if (tool) {
-        await callContinualToolJson({
-          appInstallationId: tool.appInstallationId,
-          name: tool.name,
-          arguments: { email },
-        });
-      } else {
-        throw new Error("No submission target: pass an `action` URL or a `tool`.");
-      }
+      const response = await fetch(`/api/actions/${encodeURIComponent(actionId)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input: { email } }),
+      });
+      if (!response.ok) throw new Error(`Request failed (${response.status})`);
       setStatus("success");
       form.reset();
     } catch (err) {
       setError(
-        err instanceof ContinualRuntimeError
-          ? "We couldn't reach the server. Please try again."
-          : err instanceof Error
-            ? err.message
-            : "Something went wrong."
+        err instanceof Error ? err.message : "Something went wrong."
       );
       setStatus("error");
     }
