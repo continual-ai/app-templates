@@ -2,7 +2,8 @@
   "name": "astro-default",
   "defaultDevPortHint": 4321,
   "framework": "astro",
-  "entry": "index.html",
+  "entry": "src/pages/index.astro",
   "buildOutDir": "dist",
+  "serverRuntime": true,
   "agentGuide": "AGENTS.md"
 }

@@ -1,0 +1,9 @@
+{
+  "name": "tanstack-start-app",
+  "defaultDevPortHint": 3000,
+  "framework": "tanstack-start",
+  "entry": "src/routes/index.tsx",
+  "buildOutDir": "dist",
+  "serverRuntime": true,
+  "agentGuide": "AGENTS.md"
+}

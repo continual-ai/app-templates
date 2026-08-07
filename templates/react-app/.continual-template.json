@@ -4,5 +4,6 @@
   "framework": "vite-react",
   "entry": "index.html",
   "buildOutDir": "dist",
+  "serverRuntime": true,
   "agentGuide": "AGENTS.md"
 }

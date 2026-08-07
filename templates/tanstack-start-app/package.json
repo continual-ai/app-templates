@@ -1,0 +1,33 @@
+{
+  "name": "@continual/tanstack-start-app-template",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite dev --host 0.0.0.0",
+    "build": "vite build",
+    "check": "tsc --noEmit",
+    "clean:continual": "node -e \"require('node:fs').rmSync('.continual/wrangler',{recursive:true,force:true})\"",
+    "bundle:continual": "pnpm build && pnpm clean:continual && pnpm exec wrangler deploy --dry-run --config dist/server/wrangler.json --outdir .continual/wrangler && pnpm exec continual artifact tanstack-start --config dist/server/wrangler.json",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "^1.131.35",
+    "@tanstack/react-start": "^1.131.35",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "vite": "^7.3.3"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.24.0",
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.68.0"
+  }
+}

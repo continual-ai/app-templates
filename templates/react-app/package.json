@@ -4,11 +4,13 @@
   "type": "module",
   "version": "1.0.0",
   "engines": {
-    "node": ">=24.0.0"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "dev": "NODE_ENV=development vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
+    "clean:continual": "node -e \"require('node:fs').rmSync('.continual/wrangler',{recursive:true,force:true})\"",
+    "bundle:continual": "pnpm build && pnpm clean:continual && pnpm exec wrangler deploy --dry-run --outdir .continual/wrangler && pnpm exec continual artifact react",
     "preview": "vite preview --host 0.0.0.0",
     "check": "tsc -b --pretty false"
   },
@@ -37,6 +39,8 @@
     "vite": "^7.3.3"
   },
   "devDependencies": {
-    "typescript": "^6.0.3"
+    "@cloudflare/vite-plugin": "^1.24.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.68.0"
   }
 }

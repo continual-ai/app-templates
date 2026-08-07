@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
+import cloudflare from "@astrojs/cloudflare";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
@@ -19,8 +20,9 @@ const site = process.env.SITE_URL ?? "https://example.com";
 
 // https://astro.build/config
 export default defineConfig({
+  output: "server",
+  adapter: cloudflare({ imageService: "compile" }),
   site,
-  output: "static",
   integrations: [react(), mdx(), sitemap()],
   // Hide the dev-mode toolbar so users iterating in the editor iframe don't
   // see Astro branding or floating dev UI that isn't part of their App.
@@ -46,7 +48,12 @@ export default defineConfig({
       // React client runtime resolve when deps are hoisted to a workspace root
       // (pnpm workspace). Three levels up is this repo root; two levels up
       // covers copied Apps at <repo>/apps/<app-id>.
-      fs: { allow: [resolve(projectRoot, "../.."), resolve(projectRoot, "../../..")] },
+      fs: {
+        allow: [
+          resolve(projectRoot, "../.."),
+          resolve(projectRoot, "../../.."),
+        ],
+      },
     },
   },
 });
