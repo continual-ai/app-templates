@@ -8,11 +8,16 @@ project's `continual.config.ts`.
 
 - [`astro-default`](./templates/astro-default) — Astro + React + Tailwind starter for websites,
   documentation, and content-heavy Apps.
+- [`nextjs-app`](./templates/nextjs-app) — Next.js App Router starter with React Server Components,
+  Route Handlers, and OpenNext Cloudflare output.
 - [`react-app`](./templates/react-app) — Vite + React + Tailwind starter for dashboards,
-  internal tools, portals, and interactive Apps.
+  internal tools, portals, interactive Apps, and Worker API routes.
+- [`tanstack-start-app`](./templates/tanstack-start-app) — TanStack Start starter with file-based
+  routing, server functions, and Cloudflare Vite output.
 
-Each template owns a `package.json` with a root `build` script and emits `dist/index.html` beside
-the source `index.html`. That is the layout expected by Continual preview and publishing.
+Each template owns native `dev`, `check`, `build`, and `bundle:continual` scripts plus a Wrangler
+configuration. The bundle script builds the framework's Cloudflare Worker and assets and packages
+them as one immutable Continual deployment artifact.
 
 ## Shared design system
 
@@ -31,11 +36,12 @@ the source `index.html`. That is the layout expected by Continual preview and pu
 ## App framework contract
 
 - App source is owned by the customer and lives under `apps/`.
-- The project declares Apps with `defineApp({ entry: file("apps/<app-id>/index.html") })`.
-- Business data and server behavior belong to backend Objects and Actions declared by the project.
-- Browser code calls those Actions through relative `/api/actions/<action-id>` routes.
+- The project declares each App with the source entry named by its `.continual-template.json`.
+- Framework-native Apps own their server routes and call authorized Continual tools from those
+  routes through the supplied server client.
+- Native Apps serve from `/` in local development and at the root of their published hostname.
 - Templates do not depend on the legacy `@continual/sites-sdk`, Sites telemetry, Sites preview
-  routes, or template-owned Worker backends.
+  routes, or legacy Sites publication.
 
 ## Adding or updating a template
 
@@ -46,6 +52,6 @@ the source `index.html`. That is the layout expected by Continual preview and pu
 
 ## How the templates get into a sandbox
 
-The `create-app` skill drives the scaffold flow. Templates are baked into the sandbox image under
-`/opt/app-templates/`. The skill refreshes this repository before scaffolding when network access
-is available.
+The `create-app` skill clones or refreshes this repository's `main` branch under
+`/opt/app-templates/`, reads the selected template's `AGENTS.md`, and copies source-only files into
+the project's `apps/` directory.
