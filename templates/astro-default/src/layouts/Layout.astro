@@ -28,3 +28,10 @@ const { title, description, image, canonical, type } = Astro.props;
     <slot />
   </body>
 </html>
+
+<script>
+  import { initDesignMode, initTelemetry } from "@continual/sdk/app-preview";
+
+  initDesignMode();
+  initTelemetry();
+</script>

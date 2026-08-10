@@ -11,7 +11,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "clean:continual": "node -e \"require('node:fs').rmSync('.continual/wrangler',{recursive:true,force:true})\"",
-    "bundle:continual": "pnpm build && pnpm clean:continual && pnpm exec wrangler deploy --dry-run --config dist/server/wrangler.json --outdir .continual/wrangler && pnpm exec continual artifact astro --config dist/server/wrangler.json",
+    "bundle:continual": "pnpm build && pnpm clean:continual && pnpm exec wrangler deploy --dry-run --config dist/server/wrangler.json --outdir .continual/wrangler",
     "astro": "astro",
     "check": "astro check"
   },
@@ -20,6 +20,7 @@
     "@astrojs/mdx": "^5.0.4",
     "@astrojs/react": "^5.0.4",
     "@astrojs/sitemap": "^3.7.2",
+    "@continual/sdk": "0.1.0",
     "@fontsource-variable/geist": "^5.2.8",
     "@shadcn/react": "^0.2.0",
     "@tailwindcss/vite": "^4.2.4",

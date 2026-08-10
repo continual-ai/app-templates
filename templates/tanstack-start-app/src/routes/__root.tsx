@@ -1,9 +1,11 @@
+import { initDesignMode, initTelemetry } from "@continual/sdk/app-preview";
 import {
   HeadContent,
   Outlet,
   Scripts,
   createRootRoute,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -17,6 +19,11 @@ export const Route = createRootRoute({
 });
 
 function Root() {
+  useEffect(() => {
+    initDesignMode();
+    initTelemetry();
+  }, []);
+
   return (
     <html lang="en">
       <head>
