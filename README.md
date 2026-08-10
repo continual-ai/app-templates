@@ -1,8 +1,7 @@
 # Continual App templates
 
 Starter templates for source-owned Continual Apps. Each directory under `templates/` is copied
-directly into a project repository at `apps/<app-id>/` and is declared with `defineApp` in the
-project's `continual.config.ts`.
+directly into a project repository at `apps/<app-id>/`.
 
 ## Templates
 
@@ -16,8 +15,8 @@ project's `continual.config.ts`.
   routing, server functions, and Cloudflare Vite output.
 
 Each template owns native `dev`, `check`, `build`, and `bundle:continual` scripts plus a Wrangler
-configuration. The bundle script builds the framework's Cloudflare Worker and assets and packages
-them as one immutable Continual deployment artifact.
+configuration. The bundle script builds the framework's Cloudflare Worker and assets and produces
+the Wrangler output that Continual packages when the App is published.
 
 ## Shared design system
 
@@ -36,12 +35,11 @@ them as one immutable Continual deployment artifact.
 ## App framework contract
 
 - App source is owned by the customer and lives under `apps/`.
-- The project declares each App with the source entry named by its `.continual-template.json`.
 - Framework-native Apps own their server routes and call authorized Continual tools from those
   routes through the supplied server client.
 - Native Apps serve from `/` in local development and at the root of their published hostname.
-- Templates do not depend on the legacy `@continual/sites-sdk`, Sites telemetry, Sites preview
-  routes, or legacy Sites publication.
+- Templates pin the supported `@continual/sdk` version and initialize App preview support in their
+  browser entry.
 
 ## Adding or updating a template
 

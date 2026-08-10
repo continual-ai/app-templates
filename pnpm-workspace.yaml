@@ -10,3 +10,6 @@ allowBuilds:
   msw: true
   sharp: true
   workerd: true
+
+minimumReleaseAgeExclude:
+  - "@continual/sdk@0.1.0"
