@@ -1,15 +1,26 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "name": "continual-app-templates-design-system",
-  "version": "2026-07-06",
+  "version": "2026-08-11",
   "sourceOfTruth": {
+    "tokens": "shared/styles/tokens.css",
+    "primitives": "templates/react-app/src/components/ui",
     "blocks": "blocks/react",
     "astroOnly": "blocks/astro",
-    "templates": ["templates/astro-default", "templates/react-app"]
+    "canonicalTemplates": ["templates/astro-default", "templates/react-app"],
+    "materializedTemplates": [
+      "templates/astro-default",
+      "templates/react-app",
+      "templates/nextjs-app",
+      "templates/tanstack-start-app"
+    ],
+    "syncCommand": "pnpm design-system:sync"
   },
   "stack": {
     "reactApp": ["Vite", "React", "TypeScript", "React Router", "Tailwind v4", "shadcn/ui"],
     "astroDefault": ["Astro", "React islands", "TypeScript", "Tailwind v4", "shadcn/ui", "MDX"],
+    "nextjsApp": ["Next.js App Router", "React Server Components", "TypeScript", "Tailwind v4", "shadcn/ui"],
+    "tanstackStartApp": ["TanStack Start", "React", "TypeScript", "Tailwind v4", "shadcn/ui"],
     "charts": ["recharts", "src/components/ui/chart.tsx"]
   },
   "rules": [
@@ -17,7 +28,10 @@
     "Use blocks/react as the canonical shared block format; Astro can render React components.",
     "Keep shared block props JSON-serializable so Astro can pass props safely.",
     "Use blocks/astro only for Astro content, MDX, SEO, OG, and collection helpers.",
-    "Do not introduce raw UI colors; use Tailwind token utilities backed by src/styles/global.css.",
+    "Do not introduce raw UI colors; use Tailwind utilities backed by the canonical semantic token asset.",
+    "Use the provided design system before adding components or custom control styles.",
+    "Do not install an unrelated UI or component library unless the user explicitly requests it.",
+    "Use Spectrum or Continual brand colors only as optional accents for diagrams, fields, charts, and small highlights; semantic tokens own product controls.",
     "Use lucide icons for icon buttons and navigation.",
     "Keep app surfaces dense, scannable, and workflow-oriented.",
     "For dashboards, internal tools, CRUD, queues, settings, data browsers, and chat surfaces, do not start with a marketing hero.",
@@ -65,7 +79,13 @@
     }
   },
   "tokens": {
-    "css": "src/styles/global.css",
+    "source": "shared/styles/tokens.css",
+    "entries": {
+      "astroDefault": "src/styles/global.css",
+      "reactApp": "src/styles/global.css",
+      "nextjsApp": "app/styles.css",
+      "tanstackStartApp": "src/styles/global.css"
+    },
     "colors": [
       "background",
       "foreground",
@@ -88,7 +108,29 @@
     ],
     "themeModes": ["light", "dark"],
     "radius": ["sm", "md", "lg", "xl", "2xl", "3xl", "4xl"],
-    "fonts": ["font-sans", "font-heading"]
+    "fonts": ["font-sans", "font-heading", "font-mono"]
+  },
+  "componentTheming": {
+    "principle": "A custom theme may change both semantic tokens and the owned shadcn primitive recipes; do not stop at color swaps when the requested direction changes component treatment.",
+    "canonicalSource": "templates/react-app/src/components/ui",
+    "generatedAppOwnership": "Each generated App owns its materialized primitive files and may customize them without adding another component library.",
+    "customizable": [
+      "control height and density",
+      "padding and spacing",
+      "corner shape and radius",
+      "border weight and treatment",
+      "surface elevation and shadows",
+      "component typography",
+      "state transitions and motion"
+    ],
+    "preserve": [
+      "semantic token utilities",
+      "data-slot hooks",
+      "ARIA and data-state selectors",
+      "keyboard behavior",
+      "visible focus states",
+      "contrast"
+    ]
   },
   "primitives": [
     "attachment",
@@ -124,6 +166,16 @@
     "textarea",
     "tooltip"
   ],
+  "starterCapabilities": {
+    "nextjsApp": {
+      "primitives": ["button", "card", "input", "badge", "dialog", "sheet", "empty"],
+      "layoutsAndBlocks": ["AppShell", "SidebarNav", "PageHeader", "MetricCard", "EmptyState", "StarterDashboard"]
+    },
+    "tanstackStartApp": {
+      "primitives": ["button", "card", "input", "badge", "dialog", "sheet", "empty"],
+      "layoutsAndBlocks": ["AppShell", "SidebarNav", "PageHeader", "MetricCard", "EmptyState", "StarterDashboard"]
+    }
+  },
   "blocks": {
     "marketing": [
       "Hero",
@@ -158,11 +210,15 @@
   },
   "verification": {
     "commands": [
+      "pnpm check:design-system",
       "pnpm check:react-blocks",
       "pnpm check:visual-drift",
       "pnpm -r check",
       "pnpm --filter @continual/astro-app-template build",
-      "pnpm --filter @continual/react-app-template build"
+      "pnpm --filter @continual/react-app-template build",
+      "pnpm --filter @continual/nextjs-app-template build",
+      "pnpm --filter @continual/tanstack-start-app-template build",
+      "pnpm verify:templates"
     ],
     "styleguideRoutes": {
       "reactApp": "/_styleguide",

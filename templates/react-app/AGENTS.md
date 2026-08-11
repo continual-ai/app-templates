@@ -11,9 +11,23 @@ calls relative `/api/*` routes. Keep Hyperdrive, credentials, runtime assertions
 calls in the Worker. Use `createServerClient` from `@continual/sdk/server-client` for Continual tool
 calls and record each exact Connection ID and tool name for publication.
 
-Use the shadcn primitives in `src/components/ui`, semantic Tailwind tokens, accessible names and
-focus states. Shared layouts and blocks are available under `/opt/app-templates`; copy only what the
-App uses.
+Use the provided design system first. Canonical Tailwind utilities are backed by the semantic
+tokens in `src/styles/tokens.css`: `background`, `foreground`, `card`, `popover`, `primary`,
+`secondary`, `muted`, `accent`, `destructive`, `border`, `input`, `ring`, `chart-*`, and `sidebar-*`.
+Geist, Geist Mono, radii, light mode, and dark mode are already configured.
+
+Start controls with the shadcn primitives in `src/components/ui` (including button, card, input,
+badge, dialog, sheet, sidebar, empty, fields, tables, charts, and feedback components). Reuse the
+framework-neutral layouts and app, chat, marketing, navigation, and motion blocks under
+`/opt/app-templates/blocks/react`; copy only what the App uses. Do not install an unrelated UI or
+component library unless the user explicitly requests it. Spectrum/Continual brand colors are
+optional accents for charts, diagrams, fields, and small highlights—not semantic control colors.
+
+A custom theme may change both semantic tokens and the owned shadcn primitive recipes; do not stop
+at color swaps when the requested direction changes component treatment. Adjust `--radius` plus the
+local `src/components/ui` classes and variants for control height, padding, shape, border weight,
+elevation, typography, and motion. Keep `data-slot` hooks, state/ARIA selectors, visible focus, and
+contrast intact so shared layouts and blocks inherit the theme safely.
 
 Keep the exact `@continual/sdk` version declared by the template unless the project intentionally
 upgrades it.

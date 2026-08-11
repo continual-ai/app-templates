@@ -5,9 +5,12 @@
   "packageManager": "pnpm@11.3.0",
   "scripts": {
     "build": "pnpm -r build",
-    "check": "pnpm check:react-blocks && pnpm check:visual-drift && pnpm -r check",
+    "check": "pnpm check:design-system && pnpm check:react-blocks && pnpm check:visual-drift && pnpm -r check",
+    "check:design-system": "node scripts/sync-design-system.mjs --check && node scripts/verify-template-assets.mjs",
     "check:react-blocks": "node scripts/check-react-blocks.mjs",
-    "check:visual-drift": "node scripts/check-visual-drift.mjs"
+    "check:visual-drift": "node scripts/check-visual-drift.mjs",
+    "design-system:sync": "node scripts/sync-design-system.mjs",
+    "verify:templates": "node scripts/verify-templates.mjs"
   },
   "engines": {
     "node": ">=22.12.0"

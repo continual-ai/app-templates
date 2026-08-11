@@ -7,3 +7,4 @@ export * from "./MetricCard";
 export * from "./PageHeader";
 export * from "./SettingsForm";
 export * from "./SidebarNav";
+export * from "./StarterDashboard";

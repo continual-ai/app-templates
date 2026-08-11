@@ -6,6 +6,7 @@ import {
   createRootRoute,
 } from "@tanstack/react-router";
 import { useEffect } from "react";
+import "@/styles/global.css";
 
 export const Route = createRootRoute({
   head: () => ({
