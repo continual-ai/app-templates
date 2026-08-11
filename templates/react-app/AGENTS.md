@@ -3,6 +3,13 @@
 This is a full-stack React 19 and Vite application using Cloudflare's Vite plugin. It normally
 lives under `apps/<directory>/`. Run `pnpm dev` for HMR and the local Workers runtime.
 
+Continual exposes local Vite servers through generated sandbox hostnames. Keep the controlled
+preview suffixes in `server.allowedHosts` in `vite.config.ts`. Current provider defaults include
+`.sandbox.tensorlake.ai` (Tensorlake), `.e2b.app` (E2B), `.proxy.daytona.work` (Daytona), and
+`.modal.host` (Modal). Add only the suffixes needed for the preview URLs returned by the platform;
+providers may use custom ingress domains. Do not set `allowedHosts: true`, because that disables
+Vite's DNS-rebinding protection.
+
 The App serves from `/` locally and at the root of its published hostname. Keep client links and
 `/api/*` calls relative to the App root.
 
