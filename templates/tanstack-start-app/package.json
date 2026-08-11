@@ -15,7 +15,7 @@
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
-    "@continual/sdk": "0.1.0",
+    "@continual/sdk": "0.1.1",
     "@tanstack/react-router": "^1.131.35",
     "@tanstack/react-start": "^1.131.35",
     "react": "^19.2.5",
