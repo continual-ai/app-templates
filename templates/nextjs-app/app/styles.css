@@ -1,20 +1,10 @@
-:root {
-  font-family: ui-sans-serif, system-ui, sans-serif;
-  color: #171717;
-  background: #fafafa;
-}
-body {
-  margin: 0;
-}
-main {
-  width: min(48rem, calc(100% - 2rem));
-  margin: 15vh auto;
-}
-h1 {
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  letter-spacing: -0.05em;
-  line-height: 0.95;
-}
-a {
-  color: #5b48ff;
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "./tokens.css";
+
+html.next-fonts {
+  --font-sans: var(--font-geist-sans);
+  --font-heading: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
