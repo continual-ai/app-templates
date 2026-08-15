@@ -46,7 +46,7 @@ the Wrangler output that Continual packages when the App is published.
   new treatment safely. For factory-wide changes, edit the canonical React primitive and sync it;
   generated Apps should customize their own materialized primitive files.
 - `pnpm design-system:sync` refreshes materialized assets; `pnpm check:design-system` fails on drift
-  or a missing dependency, token, primitive, block, or exact `@continual/sdk@0.1.1` pin.
+  or a missing dependency, token, primitive, block, or exact `@continual/sdk@0.1.2` pin.
 - `pnpm check:visual-drift` catches app-surface drift such as marketing heroes, oversized route
   headings, hero-scale padding, and too-round custom wrappers.
 

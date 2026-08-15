@@ -35,8 +35,8 @@ for (const [template, contract] of Object.entries(templates)) {
   const packageJson = JSON.parse(readFileSync(resolve(templateRoot, "package.json"), "utf8"));
   const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
 
-  if (packageJson.dependencies?.["@continual/sdk"] !== "0.1.1") {
-    failures.push(`${template}: @continual/sdk must remain exactly 0.1.1`);
+  if (packageJson.dependencies?.["@continual/sdk"] !== "0.1.2") {
+    failures.push(`${template}: @continual/sdk must remain exactly 0.1.2`);
   }
   for (const forbidden of ["@continual/manifest", "@continual/runtime", "@continual/cli"]) {
     if (dependencies[forbidden]) failures.push(`${template}: forbidden dependency ${forbidden}`);
