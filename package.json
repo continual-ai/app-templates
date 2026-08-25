@@ -5,8 +5,9 @@
   "packageManager": "pnpm@11.3.0",
   "scripts": {
     "build": "pnpm -r build",
-    "check": "pnpm check:design-system && pnpm check:react-blocks && pnpm check:visual-drift && pnpm -r check",
+    "check": "pnpm check:design-system && pnpm check:local-worker-bindings && pnpm check:react-blocks && pnpm check:visual-drift && pnpm -r check",
     "check:design-system": "node scripts/sync-design-system.mjs --check && node scripts/verify-template-assets.mjs",
+    "check:local-worker-bindings": "node scripts/verify-local-worker-bindings.mjs",
     "check:react-blocks": "node scripts/check-react-blocks.mjs",
     "check:visual-drift": "node scripts/check-visual-drift.mjs",
     "design-system:sync": "node scripts/sync-design-system.mjs",
