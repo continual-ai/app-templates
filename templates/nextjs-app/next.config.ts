@@ -12,6 +12,7 @@ export default {
   reactStrictMode: true,
   allowedDevOrigins: [
     "*.daytonaproxy01.net",
+    "**.tensorlake.ai",
     "*.e2b.dev",
     "*.modal.run",
     ...configuredDevOrigins,
