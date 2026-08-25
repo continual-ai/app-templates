@@ -6,10 +6,11 @@ custom server entry; browser code calls relative routes on this App.
 
 Continual exposes local Vite servers through generated sandbox hostnames. Keep the controlled
 preview suffixes in `server.allowedHosts` in `vite.config.ts`. Current provider defaults include
-`.sandbox.tensorlake.ai` (Tensorlake), `.e2b.app` (E2B), `.proxy.daytona.work` (Daytona), and
-`.modal.host` (Modal). Add only the suffixes needed for the preview URLs returned by the platform;
-providers may use custom ingress domains. Do not set `allowedHosts: true`, because that disables
-Vite's DNS-rebinding protection.
+`.tensorlake.ai` (Tensorlake, including regional hosts such as
+`*.sandbox.gcp-use4.tensorlake.ai`), `.e2b.app` (E2B), `.proxy.daytona.work` (Daytona), and
+`.modal.host` (Modal). For a custom provider ingress domain, set
+`CONTINUAL_ALLOWED_DEV_HOSTS` to a comma-separated list of exact hosts or leading-dot suffixes.
+Do not set `allowedHosts: true`, because that disables Vite's DNS-rebinding protection.
 
 The App serves from `/` locally and at the root of its published hostname. Keep links and server
 calls relative to the App root.
