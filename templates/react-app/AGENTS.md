@@ -18,6 +18,15 @@ calls relative `/api/*` routes. Keep Hyperdrive, credentials, runtime assertions
 calls in the Worker. Use `createServerClient` from `@continual/sdk/server-client` for Continual tool
 calls and record each exact Connection ID and tool name for publication.
 
+## Database access
+
+Database access is server-only. In published Workers, Continual binds Hyperdrive as `env.DATABASE`;
+in local `vite dev` and `vite preview`, the template forwards the sandbox's `DATABASE_URL` and optional
+`DATABASE_SCHEMA` only to the Worker as Cloudflare bindings. Resolve the connection string in a Worker
+route with `env.DATABASE?.connectionString ?? env.DATABASE_URL`. Never put either value in a `VITE_*`
+variable, a response, a log, or browser code. Create the database client inside each request handler and
+close it before the handler returns—do not cache Postgres clients globally.
+
 Use the provided design system first. Canonical Tailwind utilities are backed by the semantic
 tokens in `src/styles/tokens.css`: `background`, `foreground`, `card`, `popover`, `primary`,
 `secondary`, `muted`, `accent`, `destructive`, `border`, `input`, `ring`, `chart-*`, and `sidebar-*`.

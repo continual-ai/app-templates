@@ -16,6 +16,8 @@ export default defineConfig(({ command }) => {
               "CONTINUAL_EXECUTION_TOKEN",
               process.env.CONTINUAL_EXECUTION_TOKEN,
             ],
+            ["DATABASE_URL", process.env.DATABASE_URL],
+            ["DATABASE_SCHEMA", process.env.DATABASE_SCHEMA],
           ].filter((entry): entry is [string, string] => Boolean(entry[1])),
         )
       : {};

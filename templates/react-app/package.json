@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.24.0",
+    "@types/node": "^24.10.0",
     "typescript": "^6.0.3",
     "wrangler": "^4.68.0"
   }

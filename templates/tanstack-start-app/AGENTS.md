@@ -18,6 +18,15 @@ Use `createServerClient` from `@continual/sdk/server-client` in server-only code
 calls and record each exact Connection ID and tool name for publication. Keep the exact
 `@continual/sdk` version declared by the template unless the project intentionally upgrades it.
 
+## Database access
+
+Database access is server-only. In published Workers, Continual binds Hyperdrive as `env.DATABASE`;
+in local `vite dev` and `vite preview`, the template forwards the sandbox's `DATABASE_URL` and optional
+`DATABASE_SCHEMA` only to the Worker as Cloudflare bindings. Resolve the connection string in a server
+route with `env.DATABASE?.connectionString ?? env.DATABASE_URL`. Never put either value in a `VITE_*`
+variable, a response, a log, or browser code. Create the database client inside each request handler and
+close it before the handler returns—do not cache Postgres clients globally.
+
 Use the provided design system first. Tailwind v4 and shadcn are configured through
 `src/styles/global.css`, `src/styles/tokens.css`, `vite.config.ts`, and `components.json`; Geist and
 Geist Mono are loaded by the global CSS entry point. Use semantic utilities backed by `background`,
