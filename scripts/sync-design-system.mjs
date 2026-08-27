@@ -1,8 +1,7 @@
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { listPrimitiveSources, repoRoot as root, sharedPrimitivesDir } from "./lib/repo-config.mjs";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const checkOnly = process.argv.includes("--check");
 
 const starterBlocks = [
@@ -20,10 +19,18 @@ const copies = [
   ["shared/react/hooks/use-mobile.ts", "templates/tanstack-start-app/src/hooks/use-mobile.ts"],
 ];
 
-for (const primitive of readdirSync(resolve(root, "shared/react/components/ui"))) {
+const sharedPrimitives = listPrimitiveSources(sharedPrimitivesDir);
+
+if (sharedPrimitives.unsupported.length > 0) {
+  console.error(`${sharedPrimitivesDir} may only contain .tsx primitive sources:`);
+  for (const entry of sharedPrimitives.unsupported) console.error(`- ${entry}`);
+  process.exit(1);
+}
+
+for (const primitive of sharedPrimitives.names) {
   copies.push([
-    `shared/react/components/ui/${primitive}`,
-    `templates/tanstack-start-app/src/components/ui/${primitive}`,
+    `${sharedPrimitivesDir}/${primitive}.tsx`,
+    `templates/tanstack-start-app/src/components/ui/${primitive}.tsx`,
   ]);
 }
 

@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -43,4 +43,21 @@ export function readWorkspaceSettings() {
 
 export function workspaceYaml(packagesGlob) {
   return `packages:\n  - "${packagesGlob}"\n${readWorkspaceSettings()}`;
+}
+
+export const sharedPrimitivesDir = "shared/react/components/ui";
+
+export function listPrimitiveSources(directory) {
+  const names = [];
+  const unsupported = [];
+
+  for (const entry of readdirSync(resolve(repoRoot, directory), { withFileTypes: true })) {
+    if (entry.isFile() && entry.name.endsWith(".tsx")) {
+      names.push(entry.name.slice(0, -".tsx".length));
+    } else {
+      unsupported.push(entry.name);
+    }
+  }
+
+  return { names: names.sort(), unsupported: unsupported.sort() };
 }

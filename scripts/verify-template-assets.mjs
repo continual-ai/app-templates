@@ -1,8 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
+import { listPrimitiveSources, repoRoot as root, sharedPrimitivesDir } from "./lib/repo-config.mjs";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const templateRoot = resolve(root, "templates/tanstack-start-app");
 const requiredTokens = [
   "--background:",
@@ -95,6 +94,11 @@ requireFile("components.json");
 
 const designSystem = JSON.parse(readFileSync(resolve(root, "design-system.json"), "utf8"));
 const templateRoots = { tanstackStartApp: templateRoot };
+const sharedPrimitives = listPrimitiveSources(sharedPrimitivesDir);
+
+for (const entry of sharedPrimitives.unsupported) {
+  failures.push(`${sharedPrimitivesDir}: unsupported entry ${entry}; only .tsx primitive sources are supported`);
+}
 
 if (!Array.isArray(designSystem.primitives) || designSystem.primitives.some((name) => typeof name !== "string")) {
   failures.push("design-system.json: primitives must be a string array");
@@ -116,13 +120,47 @@ for (const [starter, capabilities] of Object.entries(designSystem.starterCapabil
     continue;
   }
 
-  const expected = declared === "all" ? designSystem.primitives ?? [] : declared;
-  for (const primitive of expected) {
-    if (declared !== "all" && !designSystem.primitives?.includes(primitive)) {
+  const shipped = listPrimitiveSources(resolve(starterRoot, "src/components/ui"));
+  for (const entry of shipped.unsupported) {
+    failures.push(`${starter}: unsupported entry ${entry} in src/components/ui; only .tsx primitive sources are supported`);
+  }
+
+  const shippedPrimitives = new Set(shipped.names);
+  const catalog = new Set(Array.isArray(designSystem.primitives) ? designSystem.primitives : []);
+
+  for (const primitive of sharedPrimitives.names) {
+    if (!shippedPrimitives.has(primitive)) {
+      failures.push(`${starter}: shared primitive ${primitive} is missing from src/components/ui`);
+    }
+  }
+  for (const primitive of shippedPrimitives) {
+    if (!sharedPrimitives.names.includes(primitive)) {
+      failures.push(`${starter}: src/components/ui/${primitive}.tsx has no source in ${sharedPrimitivesDir}`);
+    }
+  }
+
+  if (declared === "all") {
+    for (const primitive of catalog) {
+      if (!shippedPrimitives.has(primitive)) {
+        failures.push(`${starter}: declared primitive ${primitive} is missing from src/components/ui`);
+      }
+    }
+    for (const primitive of shippedPrimitives) {
+      if (!catalog.has(primitive)) {
+        failures.push(
+          `design-system.json: primitives must list ${primitive}, which ${starter} ships under the "all" sentinel`,
+        );
+      }
+    }
+    continue;
+  }
+
+  for (const primitive of declared) {
+    if (!catalog.has(primitive)) {
       failures.push(`design-system.json: starterCapabilities.${starter} declares unknown primitive ${primitive}`);
       continue;
     }
-    if (!existsSync(resolve(starterRoot, `src/components/ui/${primitive}.tsx`))) {
+    if (!shippedPrimitives.has(primitive)) {
       failures.push(`${starter}: declared primitive ${primitive} is missing from src/components/ui`);
     }
   }
