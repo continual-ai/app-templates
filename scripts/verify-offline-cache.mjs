@@ -13,7 +13,7 @@ const scaffold = resolve(workspace, "apps/app");
 const warmScaffold = resolve(temporaryRoot, "warm");
 const excluded = new Set(["node_modules", "dist", ".continual", ".wrangler"]);
 const workspaceSettings =
-  'allowBuilds:\n  esbuild: true\n  sharp: true\n  workerd: true\nminimumReleaseAgeExclude:\n  - "@continual/sdk@0.1.2"\n';
+  'allowBuilds:\n  esbuild: true\n  msw: true\n  sharp: true\n  workerd: true\nminimumReleaseAgeExclude:\n  - "@continual/sdk@0.1.2"\n';
 
 function copyTemplate(destination) {
   mkdirSync(dirname(destination), { recursive: true });
