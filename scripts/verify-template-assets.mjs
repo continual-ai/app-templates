@@ -40,13 +40,16 @@ if (packageJson.dependencies?.["@continual/sdk"] !== "0.1.3") {
 for (const forbidden of ["@continual/manifest", "@continual/runtime", "@continual/cli"]) {
   if (dependencies[forbidden]) failures.push(`tanstack-start-app: forbidden dependency ${forbidden}`);
 }
-for (const dependency of ["tailwindcss", "@tailwindcss/vite", "class-variance-authority", "lucide-react", "radix-ui"]) {
+for (const dependency of ["tailwindcss", "@tailwindcss/vite", "class-variance-authority", "lucide-react", "radix-ui", "shadcn"]) {
   if (!dependencies[dependency]) failures.push(`tanstack-start-app: missing dependency ${dependency}`);
 }
 
 const css = readFileSync(requireFile("src/styles/global.css"), "utf8");
 if (!css.includes('@import "tailwindcss"')) failures.push("tanstack-start-app: global CSS does not import Tailwind v4");
 if (!css.includes('tokens.css"')) failures.push("tanstack-start-app: global CSS does not import the shared token asset");
+if (!css.includes('@import "shadcn/tailwind.css"')) {
+  failures.push("tanstack-start-app: global CSS does not import shadcn/tailwind.css from the shadcn dependency");
+}
 
 if (!css.includes("@fontsource-variable/geist") || !css.includes("@fontsource-variable/geist-mono")) {
   failures.push("tanstack-start-app: global CSS must load Geist and Geist Mono");
@@ -62,6 +65,7 @@ for (const primitive of requiredPrimitives) requireFile(`src/components/ui/${pri
 const agentsGuide = readFileSync(requireFile("AGENTS.md"), "utf8");
 for (const guidance of [
   "custom theme may change both semantic tokens and the owned shadcn primitive recipes",
+  "shadcn/tailwind.css",
   "control height, padding, shape, border weight",
   "data-slot",
   "visible focus",
@@ -88,6 +92,41 @@ for (const block of ["AppShell", "SidebarNav", "PageHeader", "MetricCard", "Empt
   requireFile(`src/components/blocks/${block}.tsx`);
 }
 requireFile("components.json");
+
+const designSystem = JSON.parse(readFileSync(resolve(root, "design-system.json"), "utf8"));
+const templateRoots = { tanstackStartApp: templateRoot };
+
+if (!Array.isArray(designSystem.primitives) || designSystem.primitives.some((name) => typeof name !== "string")) {
+  failures.push("design-system.json: primitives must be a string array");
+}
+
+for (const [starter, capabilities] of Object.entries(designSystem.starterCapabilities ?? {})) {
+  const declared = capabilities.primitives;
+  if (declared !== "all" && !(Array.isArray(declared) && declared.every((name) => typeof name === "string"))) {
+    failures.push(`design-system.json: starterCapabilities.${starter}.primitives must be a string array or "all"`);
+    continue;
+  }
+  if (!Array.isArray(capabilities.layoutsAndBlocks)) {
+    failures.push(`design-system.json: starterCapabilities.${starter}.layoutsAndBlocks must be an array`);
+  }
+
+  const starterRoot = templateRoots[starter];
+  if (!starterRoot) {
+    failures.push(`design-system.json: starterCapabilities.${starter} has no known template root`);
+    continue;
+  }
+
+  const expected = declared === "all" ? designSystem.primitives ?? [] : declared;
+  for (const primitive of expected) {
+    if (declared !== "all" && !designSystem.primitives?.includes(primitive)) {
+      failures.push(`design-system.json: starterCapabilities.${starter} declares unknown primitive ${primitive}`);
+      continue;
+    }
+    if (!existsSync(resolve(starterRoot, `src/components/ui/${primitive}.tsx`))) {
+      failures.push(`${starter}: declared primitive ${primitive} is missing from src/components/ui`);
+    }
+  }
+}
 
 if (failures.length > 0) {
   console.error("Template design-system assertions failed:");

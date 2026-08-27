@@ -18,6 +18,9 @@ Worker and assets that Continual packages when the App is published.
 - `blocks/react` is the canonical block library for marketing, app, chat, navigation, and motion
   patterns. The starter's core blocks are materialized into the template.
 - `design-system.json` is the machine-readable guide for agents.
+  `starterCapabilities.<starter>.primitives` is either a `string[]` subset of the top-level
+  `primitives` list or the sentinel string `"all"`, which means the starter ships every primitive in
+  that list. Consumers must handle the sentinel explicitly rather than iterating it as a string.
 - `pnpm design-system:sync` refreshes every materialized design-system asset.
 - `pnpm check:design-system` fails on drift or a missing dependency, token, primitive, block, or
   exact supported `@continual/sdk` pin.

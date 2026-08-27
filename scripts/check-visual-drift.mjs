@@ -7,7 +7,6 @@ import { execFileSync } from "node:child_process";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const scanRoots = [
-  "templates/tanstack-start-app/src/components/blocks",
   "templates/tanstack-start-app/src/routes",
   "blocks/react/app",
   "blocks/react/chat",

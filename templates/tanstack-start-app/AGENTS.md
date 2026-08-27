@@ -40,10 +40,10 @@ variable, a response, a log, or browser code. Create the database client inside 
 close it before the handler returns—do not cache Postgres clients globally.
 
 Use the provided design system first. Tailwind v4 and shadcn are configured through
-`src/styles/global.css`, `src/styles/tokens.css`, `src/styles/shadcn-tailwind.css`,
-`vite.config.ts`, and `components.json`; Geist and Geist Mono are loaded by the global CSS entry
-point. `src/styles/shadcn-tailwind.css` is the vendored shadcn Tailwind layer, so the App needs no
-shadcn CLI dependency at install time. Use semantic utilities backed by `background`,
+`src/styles/global.css`, `src/styles/tokens.css`, `vite.config.ts`, and `components.json`; Geist and
+Geist Mono are loaded by the global CSS entry point. `src/styles/global.css` imports
+`shadcn/tailwind.css` from the `shadcn` dependency, so keep that dependency installed and keep the
+import in place. Use semantic utilities backed by `background`,
 `foreground`, `card`, `popover`, `primary`, `secondary`, `muted`, `accent`, `destructive`, `border`,
 `input`, `ring`, `chart-*`, and `sidebar-*` rather than raw product-interface colors.
 

@@ -1,25 +1,22 @@
 import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { basename, dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { performance } from "node:perf_hooks";
+import { isGeneratedArtifact, readWorkspaceSettings, repoRoot, workspaceYaml } from "./lib/repo-config.mjs";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const template = resolve(root, "templates/tanstack-start-app");
+const template = resolve(repoRoot, "templates/tanstack-start-app");
 const temporaryRoot = mkdtempSync(resolve(tmpdir(), "continual-tanstack-offline-"));
 const workspace = resolve(temporaryRoot, "project");
 const scaffold = resolve(workspace, "apps/app");
 const warmScaffold = resolve(temporaryRoot, "warm");
-const excluded = new Set(["node_modules", "dist", ".continual", ".wrangler"]);
-const workspaceSettings =
-  'allowBuilds:\n  esbuild: true\n  msw: true\n  sharp: true\n  workerd: true\nminimumReleaseAgeExclude:\n  - "@continual/sdk@0.1.2"\n';
+const workspaceSettings = readWorkspaceSettings();
 
 function copyTemplate(destination) {
   mkdirSync(dirname(destination), { recursive: true });
   cpSync(template, destination, {
     recursive: true,
-    filter: (source) => !excluded.has(basename(source)),
+    filter: (source) => !isGeneratedArtifact(source),
   });
 }
 
@@ -58,7 +55,6 @@ try {
       "install",
       "--frozen-lockfile=false",
       "--side-effects-cache",
-      "--config.dangerouslyAllowAllBuilds=true",
     ]);
     console.log(`TanStack cache warm completed in ${warmSeconds}s`);
   }
@@ -70,7 +66,7 @@ try {
   );
   writeFileSync(
     resolve(workspace, "pnpm-workspace.yaml"),
-    `packages:\n  - "apps/*"\n${workspaceSettings}`
+    workspaceYaml("apps/*")
   );
   copyTemplate(scaffold);
   const pnpmVersion = output(scaffold, "pnpm", ["--version"]);
