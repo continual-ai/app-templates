@@ -44,7 +44,9 @@ Preserve `data-slot` hooks, state and ARIA selectors, visible focus, and contras
    `pnpm design-system:sync`.
 3. Keep the template self-contained and free of project-specific backend definitions.
 4. Run `pnpm install` at the repository root to update the lockfile.
-5. Run `pnpm check`, `pnpm build`, and `pnpm verify:templates` before committing.
+5. Run `pnpm check`, `pnpm build`, `pnpm verify:templates`, and `pnpm verify:offline-cache:warm`
+   before committing. The last command warms the pnpm store, then scaffolds, installs, checks, and
+   builds the template with `pnpm install --offline`.
 
 ## Sandbox installation
 

@@ -20,7 +20,11 @@ preview suffixes in `server.allowedHosts` in `vite.config.ts`. Current provider 
 Do not set `allowedHosts: true`, because that disables Vite's DNS-rebinding protection.
 
 The App serves from `/` locally and at the root of its published hostname. Keep links and server
-calls relative to the App root.
+calls relative to the App root. `src/routes/api.health.ts` answers `GET /api/health`; keep it as the
+App's liveness check.
+
+The sandbox installs from a prewarmed offline pnpm store, so keep `packageManager` pinned to the
+declared pnpm version and declare every dependency with an exact version.
 
 Use `createServerClient` from `@continual/sdk/server-client` in server-only code for Continual tool
 calls and record each exact Connection ID and tool name for publication. Keep the exact
@@ -36,12 +40,15 @@ variable, a response, a log, or browser code. Create the database client inside 
 close it before the handler returns—do not cache Postgres clients globally.
 
 Use the provided design system first. Tailwind v4 and shadcn are configured through
-`src/styles/global.css`, `src/styles/tokens.css`, `vite.config.ts`, and `components.json`; Geist and
-Geist Mono are loaded by the global CSS entry point. Use semantic utilities backed by `background`,
+`src/styles/global.css`, `src/styles/tokens.css`, `src/styles/shadcn-tailwind.css`,
+`vite.config.ts`, and `components.json`; Geist and Geist Mono are loaded by the global CSS entry
+point. `src/styles/shadcn-tailwind.css` is the vendored shadcn Tailwind layer, so the App needs no
+shadcn CLI dependency at install time. Use semantic utilities backed by `background`,
 `foreground`, `card`, `popover`, `primary`, `secondary`, `muted`, `accent`, `destructive`, `border`,
 `input`, `ring`, `chart-*`, and `sidebar-*` rather than raw product-interface colors.
 
-Start controls with `src/components/ui` (button, card, input, badge, dialog, sheet, and empty).
+Start controls with `src/components/ui`, which ships the full source-owned primitive set (controls,
+overlays, navigation, data display, chart, and chat primitives) rather than a starter subset.
 Reuse `src/components/blocks` for `AppShell`, `SidebarNav`, `PageHeader`, `MetricCard`, `EmptyState`,
 and the representative `StarterDashboard`. More framework-neutral React blocks are available under
 `/opt/app-templates/blocks/react`; copy only what the App uses. Do not install an unrelated UI or
