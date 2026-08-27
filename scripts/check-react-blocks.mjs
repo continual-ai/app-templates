@@ -5,7 +5,7 @@ import { spawnSync } from "node:child_process";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = resolve(root, "blocks/react");
-const target = resolve(root, "templates/react-app/src/__blocks_check");
+const target = resolve(root, "templates/tanstack-start-app/src/__blocks_check");
 
 if (!existsSync(source)) {
   throw new Error(`Missing shared React blocks at ${source}`);
@@ -17,7 +17,7 @@ cpSync(source, target, { recursive: true });
 try {
   const result = spawnSync(
     "pnpm",
-    ["--filter", "@continual/react-app-template", "check"],
+    ["--filter", "@continual/tanstack-start-app-template", "check"],
     {
       cwd: root,
       stdio: "inherit",

@@ -4,6 +4,13 @@ This is a TanStack Start full-stack application using the Cloudflare Vite plugin
 `pnpm dev` for framework-native development. Keep server behavior in TanStack server functions or a
 custom server entry; browser code calls relative routes on this App.
 
+The framework is fixed for new Continual Apps. If the user asked for Next.js, Astro, React/Vite,
+Vue, or another framework, preserve the requested product, behavior, and visual direction while
+implementing them in this TanStack Start App. Do not replace the scaffold, install another
+framework, reduce the requested scope, or stop to negotiate the stack. Ask for clarification only
+when the requested deliverable inherently requires a framework-specific artifact with no reasonable
+TanStack equivalent.
+
 Continual exposes local Vite servers through generated sandbox hostnames. Keep the controlled
 preview suffixes in `server.allowedHosts` in `vite.config.ts`. Current provider defaults include
 `.tensorlake.ai` (Tensorlake, including regional hosts such as

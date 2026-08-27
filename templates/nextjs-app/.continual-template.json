@@ -1,9 +1,0 @@
-{
-  "name": "nextjs-app",
-  "defaultDevPortHint": 3000,
-  "framework": "nextjs",
-  "entry": "app/page.tsx",
-  "buildOutDir": ".open-next",
-  "serverRuntime": true,
-  "agentGuide": "AGENTS.md"
-}

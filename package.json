@@ -11,6 +11,8 @@
     "check:react-blocks": "node scripts/check-react-blocks.mjs",
     "check:visual-drift": "node scripts/check-visual-drift.mjs",
     "design-system:sync": "node scripts/sync-design-system.mjs",
+    "verify:offline-cache": "node scripts/verify-offline-cache.mjs",
+    "verify:offline-cache:warm": "node scripts/verify-offline-cache.mjs --warm",
     "verify:templates": "node scripts/verify-templates.mjs"
   },
   "engines": {

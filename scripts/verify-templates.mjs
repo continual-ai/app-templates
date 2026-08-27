@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const templates = ["astro-default", "react-app", "nextjs-app", "tanstack-start-app"];
+const templates = ["tanstack-start-app"];
 const generatedArtifactNames = new Set([
   "node_modules",
   "dist",
@@ -62,7 +62,7 @@ try {
     cpSync(resolve(root, "pnpm-lock.yaml"), resolve(workspace, "pnpm-lock.yaml"));
     writeFileSync(
       resolve(workspace, "pnpm-workspace.yaml"),
-      'packages:\n  - "templates/*"\nallowBuilds:\n  esbuild: true\n  msw: true\n  sharp: true\n  workerd: true\nminimumReleaseAgeExclude:\n  - "@continual/sdk@0.1.3"\n',
+      'packages:\n  - "templates/*"\nallowBuilds:\n  esbuild: true\n  sharp: true\n  workerd: true\nminimumReleaseAgeExclude:\n  - "@continual/sdk@0.1.3"\n',
     );
 
     const install = run("pnpm", ["install", "--offline", "--frozen-lockfile"], scaffold);

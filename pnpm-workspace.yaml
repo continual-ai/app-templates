@@ -1,5 +1,5 @@
 packages:
-  - "templates/*"
+  - "templates/tanstack-start-app"
 
 # Allow these dependencies to run their install scripts. pnpm 11 blocks all
 # install scripts by default unless explicitly allowlisted. The previous
@@ -7,7 +7,6 @@ packages:
 # which pnpm 11 silently ignores (see ERR_PNPM_IGNORED_BUILDS warning).
 allowBuilds:
   esbuild: true
-  msw: true
   sharp: true
   workerd: true
 
