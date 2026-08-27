@@ -195,8 +195,8 @@
       "pnpm check:visual-drift",
       "pnpm -r check",
       "pnpm --filter @continual/tanstack-start-app-template build",
-      "pnpm verify:templates"
-    ],
-    "styleguideRoutes": {}
+      "pnpm verify:templates",
+      "pnpm verify:offline-cache:warm"
+    ]
   }
 }

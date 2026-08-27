@@ -13,10 +13,6 @@ const scanRoots = [
   "blocks/react/chat",
 ];
 
-const ignoredPathPatterns = [
-  /templates\/tanstack-start-app\/src\/routes\/styleguide\.tsx$/,
-];
-
 const rules = [
   {
     id: "no-heavy-radius",
@@ -53,7 +49,7 @@ function listFiles(paths) {
       files.push(absolute);
     }
   }
-  return [...new Set(files)].filter((file) => !ignoredPathPatterns.some((pattern) => pattern.test(relative(root, file))));
+  return [...new Set(files)];
 }
 
 const findings = [];

@@ -12,6 +12,8 @@ const workspace = resolve(temporaryRoot, "project");
 const scaffold = resolve(workspace, "apps/app");
 const warmScaffold = resolve(temporaryRoot, "warm");
 const excluded = new Set(["node_modules", "dist", ".continual", ".wrangler"]);
+const workspaceSettings =
+  'allowBuilds:\n  esbuild: true\n  sharp: true\n  workerd: true\nminimumReleaseAgeExclude:\n  - "@continual/sdk@0.1.2"\n';
 
 function copyTemplate(destination) {
   mkdirSync(dirname(destination), { recursive: true });
@@ -51,6 +53,7 @@ function output(cwd, command, args) {
 try {
   if (process.argv.includes("--warm")) {
     copyTemplate(warmScaffold);
+    writeFileSync(resolve(warmScaffold, "pnpm-workspace.yaml"), workspaceSettings);
     const warmSeconds = run(warmScaffold, "pnpm", [
       "install",
       "--frozen-lockfile=false",
@@ -67,7 +70,7 @@ try {
   );
   writeFileSync(
     resolve(workspace, "pnpm-workspace.yaml"),
-    'packages:\n  - "apps/*"\nallowBuilds:\n  esbuild: true\n  sharp: true\n  workerd: true\n'
+    `packages:\n  - "apps/*"\n${workspaceSettings}`
   );
   copyTemplate(scaffold);
   const pnpmVersion = output(scaffold, "pnpm", ["--version"]);

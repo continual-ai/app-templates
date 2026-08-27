@@ -18,7 +18,6 @@ Worker and assets that Continual packages when the App is published.
 - `blocks/react` is the canonical block library for marketing, app, chat, navigation, and motion
   patterns. The starter's core blocks are materialized into the template.
 - `design-system.json` is the machine-readable guide for agents.
-- `styleguide.json` describes rendered styleguide coverage and expected interactions.
 - `pnpm design-system:sync` refreshes every materialized design-system asset.
 - `pnpm check:design-system` fails on drift or a missing dependency, token, primitive, block, or
   exact supported `@continual/sdk` pin.
