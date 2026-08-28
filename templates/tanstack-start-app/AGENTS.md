@@ -15,9 +15,10 @@ Do not set `allowedHosts: true`, because that disables Vite's DNS-rebinding prot
 The App serves from `/` locally and at the root of its published hostname. Keep links and server
 calls relative to the App root.
 
-Use `createServerClient` from `@continual/sdk/server-client` in server-only code for Continual tool
-calls and record each exact Connection ID and tool name for publication. Keep the exact
-`@continual/sdk` version declared by the template unless the project intentionally upgrades it.
+Use `createAppServerClient` from `@continual/sdk/app` in server request handlers, passing the
+incoming `Request`, and record each exact Connection ID and tool name for publication. Keep the
+exact `@continual/sdk` version declared by the template unless the project intentionally upgrades
+it.
 
 ## Database access
 

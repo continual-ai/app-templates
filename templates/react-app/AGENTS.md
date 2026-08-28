@@ -16,8 +16,9 @@ The App serves from `/` locally and at the root of its published hostname. Keep 
 
 Client code lives in `src`; same-origin server endpoints live in `worker/index.ts`. Browser code
 calls relative `/api/*` routes. Keep Hyperdrive, credentials, runtime assertions, and Continual tool
-calls in the Worker. Use `createServerClient` from `@continual/sdk/server-client` for Continual tool
-calls and record each exact Connection ID and tool name for publication.
+calls in the Worker. Use `createAppServerClient` from `@continual/sdk/app` in Worker request
+handlers, passing the incoming `Request`, and record each exact Connection ID and tool name for
+publication.
 
 ## Database access
 

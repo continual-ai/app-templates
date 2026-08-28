@@ -62,7 +62,7 @@ try {
     cpSync(resolve(root, "pnpm-lock.yaml"), resolve(workspace, "pnpm-lock.yaml"));
     writeFileSync(
       resolve(workspace, "pnpm-workspace.yaml"),
-      'packages:\n  - "templates/*"\nallowBuilds:\n  esbuild: true\n  msw: true\n  sharp: true\n  workerd: true\nminimumReleaseAgeExclude:\n  - "@continual/sdk@0.1.3"\n',
+      'packages:\n  - "templates/*"\nallowBuilds:\n  esbuild: true\n  msw: true\n  sharp: true\n  workerd: true\nminimumReleaseAgeExclude:\n  - "@continual/sdk@0.1.4"\n',
     );
 
     const install = run("pnpm", ["install", "--offline", "--frozen-lockfile"], scaffold);

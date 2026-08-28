@@ -7,10 +7,10 @@ Server Actions, or server-only modules; browser components call relative routes 
 The App serves from `/` locally and at the root of its published hostname. Keep internal links and
 API calls relative to the App root, such as `/settings` and `/api/threads`.
 
-Use `createServerClient` from `@continual/sdk/server-client` for server-side Continual tool calls and
-record each exact Connection ID and tool name for publication. Never pass a runtime assertion or
-execution token to the browser. Keep the exact `@continual/sdk` version declared by the template
-unless the project intentionally upgrades it.
+Use `createAppServerClient` from `@continual/sdk/app` in server request handlers, passing the
+incoming `Request`, and record each exact Connection ID and tool name for publication. Never pass a
+runtime assertion or execution token to the browser. Keep the exact `@continual/sdk` version
+declared by the template unless the project intentionally upgrades it.
 
 Prefer React Server Components for initial server-owned data and use client requests for refresh or
 interaction. Keep server/client output deterministic, including an explicit timezone for formatted
