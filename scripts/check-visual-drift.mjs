@@ -1,8 +1,7 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
-import { execFileSync } from "node:child_process";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -39,13 +38,20 @@ function listFiles(paths) {
   const files = [];
   for (const path of paths) {
     const absolute = resolve(root, path);
+    let stats;
     try {
-      const output = execFileSync("find", [absolute, "-type", "f", "(", "-name", "*.tsx", "-o", "-name", "*.ts", ")"], {
-        encoding: "utf8",
-      });
-      files.push(...output.split("\n").filter(Boolean));
+      stats = statSync(absolute);
     } catch {
-      files.push(absolute);
+      throw new Error(`Visual drift scan root does not exist: ${path}`);
+    }
+    if (!stats.isDirectory()) {
+      throw new Error(`Visual drift scan root is not a directory: ${path}`);
+    }
+
+    for (const entry of readdirSync(absolute, { recursive: true, withFileTypes: true })) {
+      if (!entry.isFile()) continue;
+      if (!entry.name.endsWith(".tsx") && !entry.name.endsWith(".ts")) continue;
+      files.push(resolve(entry.parentPath ?? entry.path, entry.name));
     }
   }
   return [...new Set(files)];

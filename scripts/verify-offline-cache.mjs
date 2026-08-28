@@ -3,7 +3,13 @@ import { tmpdir } from "node:os";
 import { dirname, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { performance } from "node:perf_hooks";
-import { isGeneratedArtifact, readWorkspaceSettings, repoRoot, workspaceYaml } from "./lib/repo-config.mjs";
+import {
+  isGeneratedArtifact,
+  pnpmVersion as expectedPnpmVersion,
+  readWorkspaceSettings,
+  repoRoot,
+  workspaceYaml,
+} from "./lib/repo-config.mjs";
 
 const template = resolve(repoRoot, "templates/tanstack-start-app");
 const temporaryRoot = mkdtempSync(resolve(tmpdir(), "continual-tanstack-offline-"));
@@ -20,18 +26,29 @@ function copyTemplate(destination) {
   });
 }
 
+function assertSucceeded(command, args, result) {
+  if (result.error) {
+    throw new Error(`${command} ${args.join(" ")} could not be run: ${result.error.message}`);
+  }
+  if (result.signal) {
+    throw new Error(`${command} ${args.join(" ")} was terminated by signal ${result.signal}`);
+  }
+  if (result.status !== 0) {
+    throw new Error(`${command} ${args.join(" ")} failed with exit code ${result.status ?? 1}`);
+  }
+}
+
 function run(cwd, command, args) {
   const startedAt = performance.now();
   const result = spawnSync(command, args, {
     cwd,
     env: { ...process.env, CI: "1" },
     stdio: "inherit",
+    shell: process.platform === "win32",
   });
   const seconds = Number(((performance.now() - startedAt) / 1000).toFixed(2));
 
-  if (result.status !== 0) {
-    throw new Error(`${command} ${args.join(" ")} failed with exit code ${result.status}`);
-  }
+  assertSucceeded(command, args, result);
   return seconds;
 }
 
@@ -40,10 +57,9 @@ function output(cwd, command, args) {
     cwd,
     env: { ...process.env, CI: "1" },
     encoding: "utf8",
+    shell: process.platform === "win32",
   });
-  if (result.status !== 0) {
-    throw new Error(`${command} ${args.join(" ")} failed with exit code ${result.status}`);
-  }
+  assertSucceeded(command, args, result);
   return result.stdout.trim();
 }
 
@@ -62,7 +78,7 @@ try {
   mkdirSync(workspace, { recursive: true });
   writeFileSync(
     resolve(workspace, "package.json"),
-    `${JSON.stringify({ private: true, packageManager: "pnpm@11.3.0" }, null, 2)}\n`
+    `${JSON.stringify({ private: true, packageManager: `pnpm@${expectedPnpmVersion}` }, null, 2)}\n`
   );
   writeFileSync(
     resolve(workspace, "pnpm-workspace.yaml"),
@@ -71,8 +87,8 @@ try {
   copyTemplate(scaffold);
   const pnpmVersion = output(scaffold, "pnpm", ["--version"]);
   const storePath = output(scaffold, "pnpm", ["store", "path"]);
-  if (pnpmVersion !== "11.3.0") {
-    throw new Error(`Expected scaffold pnpm 11.3.0, received ${pnpmVersion}`);
+  if (pnpmVersion !== expectedPnpmVersion) {
+    throw new Error(`Expected scaffold pnpm ${expectedPnpmVersion}, received ${pnpmVersion}`);
   }
   console.log(`Verifying pnpm ${pnpmVersion} cache at ${storePath}`);
 

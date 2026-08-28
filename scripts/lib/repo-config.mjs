@@ -23,6 +23,19 @@ export function isGeneratedArtifact(source) {
   return generatedArtifactNames.has(name) || name.endsWith(".tsbuildinfo");
 }
 
+export function readRootPackageJson() {
+  return JSON.parse(readFileSync(resolve(repoRoot, "package.json"), "utf8"));
+}
+
+export const pnpmVersion = (() => {
+  const packageManager = readRootPackageJson().packageManager;
+  const match = /^pnpm@(\d+\.\d+\.\d+(?:[-+][^\s]+)?)$/.exec(packageManager ?? "");
+  if (!match) {
+    throw new Error(`package.json packageManager must pin an exact pnpm version, received ${packageManager}`);
+  }
+  return match[1];
+})();
+
 export function readWorkspaceSettings() {
   const source = readFileSync(resolve(repoRoot, "pnpm-workspace.yaml"), "utf8");
   const kept = [];
@@ -30,7 +43,17 @@ export function readWorkspaceSettings() {
 
   for (const line of source.split("\n")) {
     if (line.trim() === "" || line.trimStart().startsWith("#")) continue;
-    if (!/^\s/.test(line)) topLevelKey = line.split(":")[0].trim();
+    const unindented = !/^\s/.test(line);
+    const sequenceItem = /^-(\s|$)/.test(line);
+
+    if (unindented && !sequenceItem) {
+      const key = /^([^:\s]+):/.exec(line);
+      if (!key) {
+        throw new Error(`pnpm-workspace.yaml has an unsupported top-level line: ${line}`);
+      }
+      topLevelKey = key[1];
+    }
+
     if (topLevelKey === "packages") continue;
     kept.push(line);
   }

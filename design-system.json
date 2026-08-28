@@ -191,6 +191,7 @@
   "verification": {
     "commands": [
       "pnpm check:design-system",
+      "pnpm check:local-worker-bindings",
       "pnpm check:react-blocks",
       "pnpm check:visual-drift",
       "pnpm -r check",

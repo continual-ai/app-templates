@@ -20,8 +20,16 @@ const failures = [];
 
 function requireFile(file) {
   const absolute = resolve(templateRoot, file);
-  if (!existsSync(absolute)) failures.push(`tanstack-start-app: missing ${file}`);
+  if (!existsSync(absolute)) {
+    failures.push(`tanstack-start-app: missing ${file}`);
+    return null;
+  }
   return absolute;
+}
+
+function readRequiredFile(file) {
+  const absolute = requireFile(file);
+  return absolute === null ? null : readFileSync(absolute, "utf8");
 }
 
 const packageJson = JSON.parse(readFileSync(resolve(templateRoot, "package.json"), "utf8"));
@@ -43,7 +51,7 @@ for (const dependency of ["tailwindcss", "@tailwindcss/vite", "class-variance-au
   if (!dependencies[dependency]) failures.push(`tanstack-start-app: missing dependency ${dependency}`);
 }
 
-const css = readFileSync(requireFile("src/styles/global.css"), "utf8");
+const css = readRequiredFile("src/styles/global.css") ?? "";
 if (!css.includes('@import "tailwindcss"')) failures.push("tanstack-start-app: global CSS does not import Tailwind v4");
 if (!css.includes('tokens.css"')) failures.push("tanstack-start-app: global CSS does not import the shared token asset");
 if (!css.includes('@import "shadcn/tailwind.css"')) {
@@ -54,14 +62,14 @@ if (!css.includes("@fontsource-variable/geist") || !css.includes("@fontsource-va
   failures.push("tanstack-start-app: global CSS must load Geist and Geist Mono");
 }
 
-const tokens = readFileSync(requireFile("src/styles/tokens.css"), "utf8");
+const tokens = readRequiredFile("src/styles/tokens.css");
 for (const token of requiredTokens) {
-  if (!tokens.includes(token)) failures.push(`tanstack-start-app: missing token ${token}`);
+  if (tokens !== null && !tokens.includes(token)) failures.push(`tanstack-start-app: missing token ${token}`);
 }
 
 for (const primitive of requiredPrimitives) requireFile(`src/components/ui/${primitive}.tsx`);
 
-const agentsGuide = readFileSync(requireFile("AGENTS.md"), "utf8");
+const agentsGuide = readRequiredFile("AGENTS.md");
 for (const guidance of [
   "custom theme may change both semantic tokens and the owned shadcn primitive recipes",
   "shadcn/tailwind.css",
@@ -69,21 +77,21 @@ for (const guidance of [
   "data-slot",
   "visible focus",
 ]) {
-  if (!agentsGuide.includes(guidance)) {
+  if (agentsGuide !== null && !agentsGuide.includes(guidance)) {
     failures.push(`tanstack-start-app: AGENTS.md is missing component-theming guidance: ${guidance}`);
   }
 }
 
-const button = readFileSync(requireFile("src/components/ui/button.tsx"), "utf8");
-const card = readFileSync(requireFile("src/components/ui/card.tsx"), "utf8");
-const input = readFileSync(requireFile("src/components/ui/input.tsx"), "utf8");
-if (!button.includes("buttonVariants") || !button.includes('data-slot="button"')) {
+const button = readRequiredFile("src/components/ui/button.tsx");
+const card = readRequiredFile("src/components/ui/card.tsx");
+const input = readRequiredFile("src/components/ui/input.tsx");
+if (button !== null && (!button.includes("buttonVariants") || !button.includes('data-slot="button"'))) {
   failures.push("tanstack-start-app: button must expose an owned variant recipe and data-slot hook");
 }
-if (!card.includes('data-slot="card"')) {
+if (card !== null && !card.includes('data-slot="card"')) {
   failures.push("tanstack-start-app: card must expose an owned data-slot hook");
 }
-if (!input.includes('data-slot="input"')) {
+if (input !== null && !input.includes('data-slot="input"')) {
   failures.push("tanstack-start-app: input must expose an owned data-slot hook");
 }
 
@@ -120,7 +128,13 @@ for (const [starter, capabilities] of Object.entries(designSystem.starterCapabil
     continue;
   }
 
-  const shipped = listPrimitiveSources(resolve(starterRoot, "src/components/ui"));
+  const shippedDirectory = resolve(starterRoot, "src/components/ui");
+  if (!existsSync(shippedDirectory)) {
+    failures.push(`${starter}: missing src/components/ui`);
+    continue;
+  }
+
+  const shipped = listPrimitiveSources(shippedDirectory);
   for (const entry of shipped.unsupported) {
     failures.push(`${starter}: unsupported entry ${entry} in src/components/ui; only .tsx primitive sources are supported`);
   }
