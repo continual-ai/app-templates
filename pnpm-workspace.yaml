@@ -1,10 +1,12 @@
 packages:
-  - "templates/*"
+  - "templates/tanstack-start-app"
 
 # Allow these dependencies to run their install scripts. pnpm 11 blocks all
 # install scripts by default unless explicitly allowlisted. The previous
 # config lived under `pnpm.onlyBuiltDependencies` in the root package.json,
 # which pnpm 11 silently ignores (see ERR_PNPM_IGNORED_BUILDS warning).
+# `msw` is pulled in transitively by the `shadcn` dependency the template needs
+# for its `shadcn/tailwind.css` import.
 allowBuilds:
   esbuild: true
   msw: true

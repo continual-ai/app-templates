@@ -1,11 +1,9 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { listPrimitiveSources, repoRoot as root, sharedPrimitivesDir } from "./lib/repo-config.mjs";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const checkOnly = process.argv.includes("--check");
 
-const starterPrimitives = ["badge", "button", "card", "dialog", "empty", "input", "sheet"];
 const starterBlocks = [
   "AppShell",
   "EmptyState",
@@ -16,33 +14,31 @@ const starterBlocks = [
 ];
 
 const copies = [
-  ["shared/styles/tokens.css", "templates/astro-default/src/styles/tokens.css"],
-  ["shared/styles/tokens.css", "templates/react-app/src/styles/tokens.css"],
-  ["shared/styles/tokens.css", "templates/nextjs-app/app/tokens.css"],
   ["shared/styles/tokens.css", "templates/tanstack-start-app/src/styles/tokens.css"],
+  ["shared/react/lib/utils.ts", "templates/tanstack-start-app/src/lib/utils.ts"],
+  ["shared/react/hooks/use-mobile.ts", "templates/tanstack-start-app/src/hooks/use-mobile.ts"],
 ];
 
-for (const template of ["nextjs-app", "tanstack-start-app"]) {
-  const sourceRoot = template === "nextjs-app" ? "" : "src/";
+const sharedPrimitives = listPrimitiveSources(sharedPrimitivesDir);
 
+if (sharedPrimitives.unsupported.length > 0) {
+  console.error(`${sharedPrimitivesDir} may only contain .tsx primitive sources:`);
+  for (const entry of sharedPrimitives.unsupported) console.error(`- ${entry}`);
+  process.exit(1);
+}
+
+for (const primitive of sharedPrimitives.names) {
   copies.push([
-    "templates/react-app/src/lib/utils.ts",
-    `templates/${template}/${sourceRoot}lib/utils.ts`,
+    `${sharedPrimitivesDir}/${primitive}.tsx`,
+    `templates/tanstack-start-app/src/components/ui/${primitive}.tsx`,
   ]);
+}
 
-  for (const primitive of starterPrimitives) {
-    copies.push([
-      `templates/react-app/src/components/ui/${primitive}.tsx`,
-      `templates/${template}/${sourceRoot}components/ui/${primitive}.tsx`,
-    ]);
-  }
-
-  for (const block of starterBlocks) {
-    copies.push([
-      `blocks/react/app/${block}.tsx`,
-      `templates/${template}/${sourceRoot}components/blocks/${block}.tsx`,
-    ]);
-  }
+for (const block of starterBlocks) {
+  copies.push([
+    `blocks/react/app/${block}.tsx`,
+    `templates/tanstack-start-app/src/components/blocks/${block}.tsx`,
+  ]);
 }
 
 const drift = [];

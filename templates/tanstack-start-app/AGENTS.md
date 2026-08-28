@@ -4,6 +4,13 @@ This is a TanStack Start full-stack application using the Cloudflare Vite plugin
 `pnpm dev` for framework-native development. Keep server behavior in TanStack server functions or a
 custom server entry; browser code calls relative routes on this App.
 
+The framework is fixed for new Continual Apps. If the user asked for Next.js, Astro, React/Vite,
+Vue, or another framework, preserve the requested product, behavior, and visual direction while
+implementing them in this TanStack Start App. Do not replace the scaffold, install another
+framework, reduce the requested scope, or stop to negotiate the stack. Ask for clarification only
+when the requested deliverable inherently requires a framework-specific artifact with no reasonable
+TanStack equivalent.
+
 Continual exposes local Vite servers through generated sandbox hostnames. Keep the controlled
 preview suffixes in `server.allowedHosts` in `vite.config.ts`. Current provider defaults include
 `.tensorlake.ai` (Tensorlake, including regional hosts such as
@@ -13,7 +20,11 @@ preview suffixes in `server.allowedHosts` in `vite.config.ts`. Current provider 
 Do not set `allowedHosts: true`, because that disables Vite's DNS-rebinding protection.
 
 The App serves from `/` locally and at the root of its published hostname. Keep links and server
-calls relative to the App root.
+calls relative to the App root. `src/routes/api.health.ts` answers `GET /api/health`; keep it as the
+App's liveness check.
+
+The sandbox installs from a prewarmed offline pnpm store, so keep `packageManager` pinned to the
+declared pnpm version and declare every dependency with an exact version.
 
 Use `createServerClient` from `@continual/sdk/server-client` in server-only code for Continual tool
 calls and record each exact Connection ID and tool name for publication. Keep the exact
@@ -30,11 +41,14 @@ close it before the handler returns—do not cache Postgres clients globally.
 
 Use the provided design system first. Tailwind v4 and shadcn are configured through
 `src/styles/global.css`, `src/styles/tokens.css`, `vite.config.ts`, and `components.json`; Geist and
-Geist Mono are loaded by the global CSS entry point. Use semantic utilities backed by `background`,
+Geist Mono are loaded by the global CSS entry point. `src/styles/global.css` imports
+`shadcn/tailwind.css` from the `shadcn` dependency, so keep that dependency installed and keep the
+import in place. Use semantic utilities backed by `background`,
 `foreground`, `card`, `popover`, `primary`, `secondary`, `muted`, `accent`, `destructive`, `border`,
 `input`, `ring`, `chart-*`, and `sidebar-*` rather than raw product-interface colors.
 
-Start controls with `src/components/ui` (button, card, input, badge, dialog, sheet, and empty).
+Start controls with `src/components/ui`, which ships the full source-owned primitive set (controls,
+overlays, navigation, data display, chart, and chat primitives) rather than a starter subset.
 Reuse `src/components/blocks` for `AppShell`, `SidebarNav`, `PageHeader`, `MetricCard`, `EmptyState`,
 and the representative `StarterDashboard`. More framework-neutral React blocks are available under
 `/opt/app-templates/blocks/react`; copy only what the App uses. Do not install an unrelated UI or

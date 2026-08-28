@@ -41,3 +41,6 @@ jobs:
 
       - name: Verify isolated scaffolds
         run: pnpm verify:templates
+
+      - name: Warm and verify the offline dependency cache
+        run: pnpm verify:offline-cache:warm

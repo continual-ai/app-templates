@@ -1,24 +1,10 @@
 import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { basename, dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import { assertSucceeded, isGeneratedArtifact, repoRoot as root, workspaceYaml } from "./lib/repo-config.mjs";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const templates = ["astro-default", "react-app", "nextjs-app", "tanstack-start-app"];
-const generatedArtifactNames = new Set([
-  "node_modules",
-  "dist",
-  ".astro",
-  ".next",
-  ".output",
-  ".open-next",
-  ".wrangler",
-  ".continual",
-  ".tanstack",
-  ".vite",
-  "next-env.d.ts",
-]);
+const templates = ["tanstack-start-app"];
 const requested = process.argv.slice(2).filter((argument) => !argument.startsWith("--"));
 const selected = requested.length > 0 ? templates.filter((template) => requested.includes(template)) : templates;
 const temporaryRoot = mkdtempSync(resolve(tmpdir(), "continual-app-templates-"));
@@ -36,15 +22,8 @@ function run(command, args, cwd) {
     stdio: "inherit",
     shell: process.platform === "win32",
   });
-  if (result.status !== 0) {
-    throw new Error(`${command} ${args.join(" ")} failed with exit code ${result.status ?? 1}`);
-  }
+  assertSucceeded(command, args, result);
   return Math.round((Date.now() - started) / 100) / 10;
-}
-
-function isGeneratedArtifact(source) {
-  const name = basename(source);
-  return generatedArtifactNames.has(name) || name.endsWith(".tsbuildinfo");
 }
 
 try {
@@ -62,7 +41,7 @@ try {
     cpSync(resolve(root, "pnpm-lock.yaml"), resolve(workspace, "pnpm-lock.yaml"));
     writeFileSync(
       resolve(workspace, "pnpm-workspace.yaml"),
-      'packages:\n  - "templates/*"\nallowBuilds:\n  esbuild: true\n  msw: true\n  sharp: true\n  workerd: true\nminimumReleaseAgeExclude:\n  - "@continual/sdk@0.1.3"\n',
+      workspaceYaml("templates/*"),
     );
 
     const install = run("pnpm", ["install", "--offline", "--frozen-lockfile"], scaffold);
