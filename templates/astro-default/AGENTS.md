@@ -13,6 +13,11 @@ server modules. Browser code calls relative App endpoints and never receives run
 execution tokens. Use `createAppServerClient` from `@continual/sdk/app` in server request handlers,
 passing the incoming `Request`, and record each exact Connection ID and tool name for publication.
 
+Use the request-bound client's built-in `continual.agent.run()` for an ordinary agent execution or
+`continual.agent.task()` for a typed result. These methods do not require type generation. Generate
+a Project tool catalog only for direct platform or Connection calls through `continual.tools`.
+Methods such as `threads_create` manage resources; they do not launch an agent.
+
 Use the provided design system first. Canonical Tailwind utilities are backed by the semantic
 tokens in `src/styles/tokens.css`: `background`, `foreground`, `card`, `popover`, `primary`,
 `secondary`, `muted`, `accent`, `destructive`, `border`, `input`, `ring`, `chart-*`, and `sidebar-*`.

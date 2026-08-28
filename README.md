@@ -58,6 +58,9 @@ the Wrangler output that Continual packages when the App is published.
 - Native Apps serve from `/` in local development and at the root of their published hostname.
 - Templates pin the supported `@continual/sdk` version and initialize App preview support in their
   browser entry.
+- Server instructions lead with the SDK's built-in `continual.agent.run()` and
+  `continual.agent.task()` primitives. Project type generation is reserved for direct platform and
+  Connection tool calls.
 
 ## Adding or updating a template
 

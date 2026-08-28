@@ -12,6 +12,11 @@ incoming `Request`, and record each exact Connection ID and tool name for public
 runtime assertion or execution token to the browser. Keep the exact `@continual/sdk` version
 declared by the template unless the project intentionally upgrades it.
 
+Use the request-bound client's built-in `continual.agent.run()` for an ordinary agent execution or
+`continual.agent.task()` for a typed result. These methods do not require type generation. Generate
+a Project tool catalog only for direct platform or Connection calls through `continual.tools`.
+Methods such as `threads_create` manage resources; they do not launch an agent.
+
 Prefer React Server Components for initial server-owned data and use client requests for refresh or
 interaction. Keep server/client output deterministic, including an explicit timezone for formatted
 dates. Treat Continual tool output as its declared structured result rather than guessing alternate

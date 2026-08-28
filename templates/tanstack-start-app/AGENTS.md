@@ -20,6 +20,11 @@ incoming `Request`, and record each exact Connection ID and tool name for public
 exact `@continual/sdk` version declared by the template unless the project intentionally upgrades
 it.
 
+Use the request-bound client's built-in `continual.agent.run()` for an ordinary agent execution or
+`continual.agent.task()` for a typed result. These methods do not require type generation. Generate
+a Project tool catalog only for direct platform or Connection calls through `continual.tools`.
+Methods such as `threads_create` manage resources; they do not launch an agent.
+
 ## Database access
 
 Database access is server-only. In published Workers, Continual binds Hyperdrive as `env.DATABASE`;
