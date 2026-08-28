@@ -35,8 +35,8 @@ for (const [template, contract] of Object.entries(templates)) {
   const packageJson = JSON.parse(readFileSync(resolve(templateRoot, "package.json"), "utf8"));
   const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
 
-  if (packageJson.dependencies?.["@continual/sdk"] !== "0.1.3") {
-    failures.push(`${template}: @continual/sdk must remain exactly 0.1.3`);
+  if (packageJson.dependencies?.["@continual/sdk"] !== "0.1.4") {
+    failures.push(`${template}: @continual/sdk must remain exactly 0.1.4`);
   }
   if (packageJson.engines?.node !== ">=24.0.0") {
     failures.push(`${template}: Node engine must match the SDK requirement (>=24.0.0)`);
