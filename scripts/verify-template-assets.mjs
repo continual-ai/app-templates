@@ -38,6 +38,9 @@ for (const [template, contract] of Object.entries(templates)) {
   if (packageJson.dependencies?.["@continual/sdk"] !== "0.1.3") {
     failures.push(`${template}: @continual/sdk must remain exactly 0.1.3`);
   }
+  if (packageJson.engines?.node !== ">=24.0.0") {
+    failures.push(`${template}: Node engine must match the SDK requirement (>=24.0.0)`);
+  }
   for (const forbidden of ["@continual/manifest", "@continual/runtime", "@continual/cli"]) {
     if (dependencies[forbidden]) failures.push(`${template}: forbidden dependency ${forbidden}`);
   }
@@ -58,6 +61,12 @@ for (const [template, contract] of Object.entries(templates)) {
       failures.push(`${template}: next/font variables must override root font fallbacks with class specificity`);
     }
     requireFile(template, "postcss.config.mjs");
+  } else if (template === "react-app") {
+    const tsconfig = readFileSync(requireFile(template, "tsconfig.json"), "utf8");
+    requireFile(template, "tsconfig.worker.json");
+    if (!tsconfig.includes("tsconfig.worker.json")) {
+      failures.push(`${template}: root TypeScript project must check the Worker`);
+    }
   } else if (!css.includes("@fontsource-variable/geist") || !css.includes("@fontsource-variable/geist-mono")) {
     failures.push(`${template}: global CSS must load Geist and Geist Mono`);
   }

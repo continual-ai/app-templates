@@ -4,7 +4,7 @@
   "type": "module",
   "version": "1.0.0",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
     "dev": "NODE_ENV=development vite --host 0.0.0.0",
