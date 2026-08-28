@@ -1,6 +1,11 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { listPrimitiveSources, repoRoot as root, sharedPrimitivesDir } from "./lib/repo-config.mjs";
+import {
+  listPrimitiveSources,
+  pnpmPackageManager,
+  repoRoot as root,
+  sharedPrimitivesDir,
+} from "./lib/repo-config.mjs";
 
 const templateRoot = resolve(root, "templates/tanstack-start-app");
 const requiredTokens = [
@@ -33,6 +38,11 @@ function readRequiredFile(file) {
 }
 
 const packageJson = JSON.parse(readFileSync(resolve(templateRoot, "package.json"), "utf8"));
+if (packageJson.packageManager !== pnpmPackageManager) {
+  failures.push(
+    `tanstack-start-app: packageManager must match the root pin ${pnpmPackageManager}, received ${packageJson.packageManager}`,
+  );
+}
 const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
 
 for (const [dependency, version] of Object.entries(dependencies)) {
@@ -51,15 +61,16 @@ for (const dependency of ["tailwindcss", "@tailwindcss/vite", "class-variance-au
   if (!dependencies[dependency]) failures.push(`tanstack-start-app: missing dependency ${dependency}`);
 }
 
-const css = readRequiredFile("src/styles/global.css") ?? "";
-if (!css.includes('@import "tailwindcss"')) failures.push("tanstack-start-app: global CSS does not import Tailwind v4");
-if (!css.includes('tokens.css"')) failures.push("tanstack-start-app: global CSS does not import the shared token asset");
-if (!css.includes('@import "shadcn/tailwind.css"')) {
-  failures.push("tanstack-start-app: global CSS does not import shadcn/tailwind.css from the shadcn dependency");
-}
-
-if (!css.includes("@fontsource-variable/geist") || !css.includes("@fontsource-variable/geist-mono")) {
-  failures.push("tanstack-start-app: global CSS must load Geist and Geist Mono");
+const css = readRequiredFile("src/styles/global.css");
+if (css !== null) {
+  if (!css.includes('@import "tailwindcss"')) failures.push("tanstack-start-app: global CSS does not import Tailwind v4");
+  if (!css.includes('tokens.css"')) failures.push("tanstack-start-app: global CSS does not import the shared token asset");
+  if (!css.includes('@import "shadcn/tailwind.css"')) {
+    failures.push("tanstack-start-app: global CSS does not import shadcn/tailwind.css from the shadcn dependency");
+  }
+  if (!css.includes("@fontsource-variable/geist") || !css.includes("@fontsource-variable/geist-mono")) {
+    failures.push("tanstack-start-app: global CSS must load Geist and Geist Mono");
+  }
 }
 
 const tokens = readRequiredFile("src/styles/tokens.css");

@@ -27,14 +27,31 @@ export function readRootPackageJson() {
   return JSON.parse(readFileSync(resolve(repoRoot, "package.json"), "utf8"));
 }
 
-export const pnpmVersion = (() => {
+export const pnpmPackageManager = (() => {
   const packageManager = readRootPackageJson().packageManager;
-  const match = /^pnpm@(\d+\.\d+\.\d+(?:[-+][^\s]+)?)$/.exec(packageManager ?? "");
-  if (!match) {
+  if (!/^pnpm@\d+\.\d+\.\d+(?:-[^+\s]+)?(?:\+[^\s]+)?$/.test(packageManager ?? "")) {
     throw new Error(`package.json packageManager must pin an exact pnpm version, received ${packageManager}`);
   }
-  return match[1];
+  return packageManager;
 })();
+
+export const pnpmVersion = /^pnpm@(\d+\.\d+\.\d+(?:-[^+\s]+)?)/.exec(pnpmPackageManager)[1];
+
+export function assertSpawned(command, args, result) {
+  if (result.error) {
+    throw new Error(`${command} ${args.join(" ")} could not be run: ${result.error.message}`);
+  }
+  if (result.signal) {
+    throw new Error(`${command} ${args.join(" ")} was terminated by signal ${result.signal}`);
+  }
+}
+
+export function assertSucceeded(command, args, result) {
+  assertSpawned(command, args, result);
+  if (result.status !== 0) {
+    throw new Error(`${command} ${args.join(" ")} failed with exit code ${result.status ?? 1}`);
+  }
+}
 
 export function readWorkspaceSettings() {
   const source = readFileSync(resolve(repoRoot, "pnpm-workspace.yaml"), "utf8");

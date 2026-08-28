@@ -2,7 +2,7 @@ import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
-import { isGeneratedArtifact, repoRoot as root, workspaceYaml } from "./lib/repo-config.mjs";
+import { assertSucceeded, isGeneratedArtifact, repoRoot as root, workspaceYaml } from "./lib/repo-config.mjs";
 
 const templates = ["tanstack-start-app"];
 const requested = process.argv.slice(2).filter((argument) => !argument.startsWith("--"));
@@ -22,9 +22,7 @@ function run(command, args, cwd) {
     stdio: "inherit",
     shell: process.platform === "win32",
   });
-  if (result.status !== 0) {
-    throw new Error(`${command} ${args.join(" ")} failed with exit code ${result.status ?? 1}`);
-  }
+  assertSucceeded(command, args, result);
   return Math.round((Date.now() - started) / 100) / 10;
 }
 

@@ -4,7 +4,9 @@ import { dirname, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { performance } from "node:perf_hooks";
 import {
+  assertSucceeded,
   isGeneratedArtifact,
+  pnpmPackageManager,
   pnpmVersion as expectedPnpmVersion,
   readWorkspaceSettings,
   repoRoot,
@@ -24,18 +26,6 @@ function copyTemplate(destination) {
     recursive: true,
     filter: (source) => !isGeneratedArtifact(source),
   });
-}
-
-function assertSucceeded(command, args, result) {
-  if (result.error) {
-    throw new Error(`${command} ${args.join(" ")} could not be run: ${result.error.message}`);
-  }
-  if (result.signal) {
-    throw new Error(`${command} ${args.join(" ")} was terminated by signal ${result.signal}`);
-  }
-  if (result.status !== 0) {
-    throw new Error(`${command} ${args.join(" ")} failed with exit code ${result.status ?? 1}`);
-  }
 }
 
 function run(cwd, command, args) {
@@ -78,7 +68,7 @@ try {
   mkdirSync(workspace, { recursive: true });
   writeFileSync(
     resolve(workspace, "package.json"),
-    `${JSON.stringify({ private: true, packageManager: `pnpm@${expectedPnpmVersion}` }, null, 2)}\n`
+    `${JSON.stringify({ private: true, packageManager: pnpmPackageManager }, null, 2)}\n`
   );
   writeFileSync(
     resolve(workspace, "pnpm-workspace.yaml"),
