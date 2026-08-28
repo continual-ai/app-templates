@@ -10,8 +10,8 @@ endpoint calls relative to the App root.
 
 Keep credentials, Hyperdrive, and Continual tool calls in `.astro` frontmatter, API endpoints, or
 server modules. Browser code calls relative App endpoints and never receives runtime assertions or
-execution tokens. Use `createServerClient` from `@continual/sdk/server-client` for Continual tool
-calls and record each exact Connection ID and tool name for publication.
+execution tokens. Use `createAppServerClient` from `@continual/sdk/app` in server request handlers,
+passing the incoming `Request`, and record each exact Connection ID and tool name for publication.
 
 Use the provided design system first. Canonical Tailwind utilities are backed by the semantic
 tokens in `src/styles/tokens.css`: `background`, `foreground`, `card`, `popover`, `primary`,
