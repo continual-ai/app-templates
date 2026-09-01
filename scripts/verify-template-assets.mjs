@@ -51,8 +51,8 @@ for (const [dependency, version] of Object.entries(dependencies)) {
   }
 }
 
-if (packageJson.dependencies?.["@continual/sdk"] !== "0.1.3") {
-  failures.push("tanstack-start-app: @continual/sdk must remain exactly 0.1.3");
+if (packageJson.dependencies?.["@continual/sdk"] !== "0.1.4") {
+  failures.push("tanstack-start-app: @continual/sdk must remain exactly 0.1.4");
 }
 for (const forbidden of ["@continual/manifest", "@continual/runtime", "@continual/cli"]) {
   if (dependencies[forbidden]) failures.push(`tanstack-start-app: forbidden dependency ${forbidden}`);
