@@ -37,6 +37,17 @@ try {
       recursive: true,
       filter: (source) => !isGeneratedArtifact(source),
     });
+    if (template === "tanstack-start-app") {
+      writeFileSync(
+        resolve(scaffold, "src/routes/template-verification.tsx"),
+        `import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/template-verification")({
+  component: () => <main>Template verification</main>,
+});
+`,
+      );
+    }
     cpSync(resolve(root, "package.json"), resolve(workspace, "package.json"));
     cpSync(resolve(root, "pnpm-lock.yaml"), resolve(workspace, "pnpm-lock.yaml"));
     writeFileSync(

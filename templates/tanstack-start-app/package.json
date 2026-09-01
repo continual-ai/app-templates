@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite dev --host 0.0.0.0",
     "build": "vite build",
-    "check": "tsc --noEmit",
+    "check": "vite build && tsc --noEmit",
     "clean:continual": "node -e \"require('node:fs').rmSync('.continual/wrangler',{recursive:true,force:true})\"",
     "bundle:continual": "pnpm build && pnpm clean:continual && pnpm exec wrangler deploy --dry-run --config dist/server/wrangler.json --outdir .continual/wrangler",
     "preview": "vite preview --host 0.0.0.0"
