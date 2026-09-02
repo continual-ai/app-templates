@@ -27,8 +27,38 @@ if (!healthRoute.includes('createFileRoute("/api/health")') || !healthRoute.incl
 }
 
 const guidance = readFileSync(resolve(template, "AGENTS.md"), "utf8");
-if (!guidance.includes("env.DATABASE?.connectionString ?? env.DATABASE_URL")) {
-  failures.push("tanstack-start-app: missing server-only Hyperdrive/local database guidance");
+if (!guidance.includes('getDatabaseEnvironment } from "@/server/database-env"')) {
+  failures.push("tanstack-start-app: missing typed server-only database guidance");
+}
+if (guidance.includes("Hyperdrive") || guidance.includes("env.DATABASE")) {
+  failures.push("tanstack-start-app: guidance must not use the legacy Hyperdrive binding");
+}
+if (
+  !guidance.includes("@neondatabase/serverless") ||
+  !guidance.includes("neon(connectionString)")
+) {
+  failures.push("tanstack-start-app: missing Neon serverless driver guidance");
+}
+
+const databaseEnvironment = readFileSync(
+  resolve(template, "src/server/database-env.ts"),
+  "utf8",
+);
+if (
+  !databaseEnvironment.includes('import { env } from "cloudflare:workers"') ||
+  !databaseEnvironment.includes("env.DATABASE_URL") ||
+  !databaseEnvironment.includes("env.DATABASE_SCHEMA")
+) {
+  failures.push("tanstack-start-app: database helper must resolve typed Worker bindings");
+}
+
+const workerEnvironment = readFileSync(resolve(template, "src/worker-env.d.ts"), "utf8");
+if (
+  !workerEnvironment.includes('declare module "cloudflare:workers"') ||
+  !workerEnvironment.includes("DATABASE_URL?: string") ||
+  !workerEnvironment.includes("DATABASE_SCHEMA?: string")
+) {
+  failures.push("tanstack-start-app: missing managed Worker binding declarations");
 }
 
 if (failures.length > 0) {

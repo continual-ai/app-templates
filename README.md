@@ -44,6 +44,10 @@ Preserve `data-slot` hooks, state and ARIA selectors, visible focus, and contras
 
 ## Updating the template
 
+[`templates/README.md`](./templates/README.md) is the reusable template authoring contract. It
+separates platform requirements from the TanStack-specific reference implementation; use it when
+adding another framework or updating an older template.
+
 1. Edit template-owned files directly.
 2. Edit canonical tokens, primitives, or blocks under `shared/` or `blocks/`, then run
    `pnpm design-system:sync`.
