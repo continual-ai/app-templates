@@ -33,6 +33,12 @@ if (!guidance.includes('getDatabaseEnvironment } from "@/server/database-env"'))
 if (guidance.includes("Hyperdrive") || guidance.includes("env.DATABASE")) {
   failures.push("tanstack-start-app: guidance must not use the legacy Hyperdrive binding");
 }
+if (
+  !guidance.includes("@neondatabase/serverless") ||
+  !guidance.includes("neon(connectionString)")
+) {
+  failures.push("tanstack-start-app: missing Neon serverless driver guidance");
+}
 
 const databaseEnvironment = readFileSync(
   resolve(template, "src/server/database-env.ts"),

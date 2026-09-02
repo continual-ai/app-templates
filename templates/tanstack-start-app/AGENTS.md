@@ -34,9 +34,12 @@ calls and record each exact Connection ID and tool name for publication. Keep th
 
 Keep database access in server-only functions and routes. Local development and published Apps
 receive the Branch database as `DATABASE_URL`, with optional `DATABASE_SCHEMA`; the publisher stores
-the production URL as an encrypted Worker secret. Create and close the Postgres client within one
-request, use `{ max: 1, prepare: false }` with Postgres.js, and never expose either binding to browser
-code, `VITE_*`, responses, logs, source control, or Wrangler configuration. Declare
+the production URL as an encrypted Worker secret. For a database-backed App, add the exact
+`@neondatabase/serverless` version and use its HTTP `neon()` client for one-shot queries or
+non-interactive transactions. Use its WebSocket-compatible `Pool` only when the App needs an
+interactive transaction or a `node-postgres`-compatible API. Create the client inside the
+request-owned server function, close a `Pool` before it returns, and never expose either binding to
+browser code, `VITE_*`, responses, logs, source control, or Wrangler configuration. Declare
 `"continual": { "database": true }` in `package.json` only when the App uses the Branch database.
 Resolve the bindings through the template's typed server-only helper:
 
@@ -45,6 +48,22 @@ import { getDatabaseEnvironment } from "@/server/database-env";
 
 const { connectionString, schema } = getDatabaseEnvironment();
 ```
+
+For example, a one-shot query uses the Worker-native HTTP client:
+
+```ts
+import { neon } from "@neondatabase/serverless";
+import { getDatabaseEnvironment } from "@/server/database-env";
+
+const { connectionString } = getDatabaseEnvironment();
+const sql = neon(connectionString);
+const rows = await sql`select id, name from items order by name`;
+```
+
+When `DATABASE_SCHEMA` is set, validate it against App-owned constants and use a driver-supported
+identifier helper to schema-qualify queries; never interpolate an unchecked identifier. Because the
+supplied Neon pool uses transaction mode, do not rely on session-level `SET search_path` across
+transactions.
 
 The helper uses `import { env } from "cloudflare:workers"`; `src/worker-env.d.ts` owns the binding
 types. Extend that declaration when the App adds another managed Worker binding instead of creating
